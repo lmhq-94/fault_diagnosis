@@ -88,154 +88,7 @@
       overflow: hidden;
     }
     
-    .fishbone-tail {
-      position: absolute;
-      left: 6%;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 0;
-      height: 0;
-      border-top: 0px solid transparent;
-      border-bottom: 0px solid transparent;
-      border-right: 0px solid transparent;
-      /* Replaced by ::before and ::after pseudo-elements */
-    }
-    .fishbone-tail::before,
-    .fishbone-tail::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      width: 36px;
-      height: 3px;
-      background: var(--navy);
-      border-radius: 2px;
-    }
-    .fishbone-tail::before {
-      top: -18px;
-      transform: rotate(35deg);
-      transform-origin: right center;
-    }
-    .fishbone-tail::after {
-      top: 18px;
-      transform: rotate(-35deg);
-      transform-origin: right center;
-    }
-    
-    .fishbone-spine {
-      position: absolute;
-      top: 50%;
-      left: 10%;
-      right: 12%;
-      height: 4px;
-      background: var(--navy);
-      transform: translateY(-50%);
-    }
-    
-    .fishbone-head {
-      position: absolute;
-      right: 7%;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 0;
-      height: 0;
-      border-top: 20px solid transparent;
-      border-bottom: 20px solid transparent;
-      border-left: 40px solid var(--navy);
-    }
-    
-    .fishbone-branch {
-      position: absolute;
-      width: 130px;
-      height: 3px;
-      background: var(--blue);
-      transform-origin: right center; /* Right end touches the spine */
-    }
-    
-    .fishbone-branch-upper {
-      transform: rotate(40deg); /* angled down-right toward spine */
-    }
-    
-    .fishbone-branch-lower {
-      transform: rotate(-40deg); /* angled up-right toward spine */
-    }
-    
-    .fishbone-label {
-      position: absolute;
-      font-weight: 600;
-      font-size: 12px;
-      padding: 6px 7px;
-      background: white;
-      border-radius: 6px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      cursor: pointer;
-      transition: all 0.2s;
-      width: 104px;
-      min-height: 84px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      line-height: 1.15;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-    }
-    
-    .fishbone-label:hover {
-      transform: translate(-50%, -50%) scale(1.03);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
 
-    .fishbone-label-title {
-      font-weight: 700;
-      font-size: 10px;
-      margin-bottom: 4px;
-    }
-
-    .fishbone-label-value {
-      font-size: 9px;
-      font-weight: 500;
-      color: inherit;
-      word-break: break-word;
-    }
-
-    .fishbone-cause {
-      position: absolute;
-      right: 12%;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 150px;
-      min-height: 88px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.96);
-      border: 2px solid rgba(30, 58, 95, 0.15);
-      color: var(--navy);
-      font-size: 11px;
-      font-weight: 700;
-      text-align: center;
-      line-height: 1.2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      z-index: 2;
-    }
-
-    .fishbone-cause-title {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: #475569;
-    }
-
-    .fishbone-cause-value {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--navy);
-      word-break: break-word;
-    }
     
     .why-card {
       transition: all 0.3s ease;
@@ -279,265 +132,7 @@
       animation: fadeIn 0.3s ease-out;
     }
     
-    /* Estilos profesionales para el diagrama de Pareto */
-    .pareto-container {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      border: 1px solid #e5e7eb;
-    }
-    
-    .pareto-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    
-    .pareto-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #1f2937;
-      margin: 0;
-    }
-    
-    .pareto-stats {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-    
-    .pareto-stat {
-      text-align: center;
-      padding: 8px 16px;
-      background: #f3f4f6;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-    }
-    
-    .pareto-stat-value {
-      display: block;
-      font-size: 20px;
-      font-weight: 700;
-      color: #3b82f6;
-      margin-bottom: 2px;
-    }
-    
-    .pareto-stat-label {
-      font-size: 11px;
-      font-weight: 500;
-      color: #6b7280;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .pareto-chart-wrapper {
-      background: #ffffff;
-      border-radius: 8px;
-      padding: 20px;
-      border: 1px solid #e5e7eb;
-      position: relative;
-    }
-    
-    .pareto-chart {
-      position: relative;
-      height: 400px;
-      width: 100%;
-      background: #fafbfc;
-    }
-    
-    .pareto-grid {
-      position: absolute;
-      top: 0;
-      left: 80px;
-      right: 0;
-      bottom: 60px;
-      pointer-events: none;
-    }
-    
-    .pareto-grid-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: #e5e7eb;
-      border-top: 1px dashed #9ca3af;
-    }
-    
-    .pareto-grid-label {
-      position: absolute;
-      left: 15px;
-      font-size: 10px;
-      font-weight: 600;
-      color: #6b7280;
-      background: #ffffff;
-      padding: 2px 6px;
-      border-radius: 4px;
-      border: 1px solid #e5e7eb;
-    }
-    
-    .pareto-bars {
-      position: absolute;
-      top: 0;
-      left: 80px;
-      right: 0;
-      bottom: 60px;
-      height: 100%;
-    }
-    
-    .pareto-bar {
-      position: absolute;
-      bottom: 0;
-      background: linear-gradient(180deg, #3b82f6, #1d4ed8);
-      border-radius: 4px 4px 0 0;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      border: 1px solid #2563eb;
-    }
-    
-    .pareto-bar:hover {
-      transform: translateY(-2px);
-      background: linear-gradient(180deg, #2563eb, #1e40af);
-    }
-    
-    .pareto-bar-value {
-      position: absolute;
-      top: 6px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 11px;
-      font-weight: 700;
-      color: #ffffff;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    }
-    
-    .pareto-label {
-      position: absolute;
-      bottom: -25px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 10px;
-      font-weight: 600;
-      color: #374151;
-      background: #ffffff;
-      padding: 4px 8px;
-      border-radius: 4px;
-      border: 1px solid #d1d5db;
-      white-space: nowrap;
-      max-width: 100px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    
-    .pareto-line-container {
-      position: absolute;
-      top: 0;
-      left: 80px;
-      right: 0;
-      bottom: 60px;
-      height: 100%;
-      pointer-events: none;
-    }
-    
-    .pareto-line {
-      stroke: #dc2626;
-      stroke-width: 2.5;
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    
-    .pareto-line-point {
-      fill: #dc2626;
-      stroke: #ffffff;
-      stroke-width: 2;
-    }
-    
-    .pareto-legend {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid #e5e7eb;
-    }
-    
-    .pareto-legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 500;
-      color: #374151;
-    }
-    
-    .pareto-legend-color {
-      width: 14px;
-      height: 14px;
-      border-radius: 3px;
-      border: 1px solid #d1d5db;
-    }
-    
-    .pareto-legend-bar {
-      background: linear-gradient(180deg, #3b82f6, #1d4ed8);
-    }
-    
-    .pareto-legend-line {
-      height: 2.5px;
-      width: 20px;
-      background: #dc2626;
-      border-radius: 2px;
-    }
-    
-    .pareto-y-label {
-      position: absolute;
-      left: 15px;
-      font-size: 10px;
-      font-weight: 600;
-      color: #6b7280;
-      background: #ffffff;
-      padding: 2px 6px;
-      border-radius: 4px;
-      border: 1px solid #e5e7eb;
-      white-space: nowrap;
-    }
-    
-    .pareto-x-label {
-      position: absolute;
-      bottom: 15px;
-      font-size: 10px;
-      font-weight: 600;
-      color: #6b7280;
-      background: #ffffff;
-      padding: 4px 8px;
-      border-radius: 4px;
-      border: 1px solid #e5e7eb;
-      text-align: center;
-      white-space: nowrap;
-      max-width: 70px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    
-    .pareto-axis {
-      position: absolute;
-      background: #374151;
-    }
-    
-    .pareto-y-axis {
-      left: 80px;
-      bottom: 60px;
-      top: 40px;
-      width: 2px;
-    }
-    
-    .pareto-x-axis {
-      left: 80px;
-      bottom: 60px;
-      right: 40px;
-      height: 2px;
-    }
+
     
     /* Estilos para datepicker */
     input[type="date"] {
@@ -548,9 +143,7 @@
       cursor: pointer;
     }
     
-    input[type="date"]::-moz-calendar-picker-indicator {
-      cursor: pointer;
-    }
+
 
     /* Estilos mejorados para selects/dropdowns */
     select {
@@ -584,25 +177,7 @@
       margin-bottom: 0; /* Eliminado para no bloquear otros campos */
     }
 
-    /* Asegurar que las opciones aparezcan debajo */
-    select option {
-      padding: 8px 12px;
-      background-color: white;
-      color: #374151;
-      position: relative !important;
-    }
 
-    /* Estilos específicos para navegadores WebKit (Chrome, Safari, Edge) */
-    select {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-    }
-    
-    /* Forzar dropdown hacia abajo en WebKit */
-    select::-webkit-calendar-picker-indicator {
-      display: none;
-    }
 
     /* Standardized input and button styles */
     .std-input {
@@ -721,14 +296,6 @@
       margin-bottom: 8px;
     }
     
-    .std-label-sm {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: #374151;
-      margin-bottom: 6px;
-    }
-    
     .std-input-sm-fixed {
       width: 100px;
     }
@@ -789,7 +356,7 @@
     
     /* Estilos para impresión */
     @media print {
-      header, footer, .bg-white.rounded-xl.shadow-md.mb-6 {
+      header, footer {
         display: none !important;
       }
       
@@ -832,13 +399,7 @@
           <h1 class="text-xl sm:text-2xl font-bold">Herramienta de Diagnóstico de Fallas</h1>
           <p class="text-blue-100 text-xs sm:text-sm">Identifica y soluciona problemas de raíz</p>
         </div>
-        <div class="flex items-center gap-3">
-          <button id="clearAllBtn" onclick="clearAll()" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-4 py-2 rounded-lg transition border border-white/20 backdrop-blur-sm flex items-center gap-2 text-sm sm:text-base hidden">
-            <i class="fas fa-trash-alt"></i>
-            <span class="hidden sm:inline">Limpiar Todo</span>
-            <span class="sm:hidden">Limpiar</span>
-          </button>
-        </div>
+
       </div>
     </div>
   </header>
@@ -851,14 +412,11 @@
           <button onclick="showTab('captura')" id="tab-captura" class="flex-1 min-w-[140px] px-3 sm:px-6 py-4 font-semibold text-gray-600 hover:text-blue-600 transition tab-active text-sm sm:text-base">
             <i class="fas fa-edit mr-1 sm:mr-2"></i><span class="hidden sm:inline">Captura del Problema</span><span class="sm:hidden">Captura</span>
           </button>
-          <button onclick="showTab('5whys')" id="tab-5whys" class="flex-1 min-w-[140px] px-3 sm:px-6 py-4 font-semibold text-gray-600 hover:text-blue-600 transition text-sm sm:text-base">
-            <i class="fas fa-question-circle mr-1 sm:mr-2"></i><span class="hidden sm:inline">5 Porqués</span><span class="sm:hidden">5 Porqués</span>
-          </button>
           <button onclick="showTab('ishikawa')" id="tab-ishikawa" class="flex-1 min-w-[140px] px-3 sm:px-6 py-4 font-semibold text-gray-600 hover:text-blue-600 transition text-sm sm:text-base">
             <i class="fas fa-project-diagram mr-1 sm:mr-2"></i><span class="hidden sm:inline">Ishikawa</span><span class="sm:hidden">Ishikawa</span>
           </button>
-          <button onclick="showTab('pareto')" id="tab-pareto" class="flex-1 min-w-[140px] px-3 sm:px-6 py-4 font-semibold text-gray-600 hover:text-blue-600 transition text-sm sm:text-base">
-            <i class="fas fa-chart-bar mr-1 sm:mr-2"></i><span class="hidden sm:inline">Pareto</span><span class="sm:hidden">Pareto</span>
+          <button onclick="showTab('5whys')" id="tab-5whys" class="flex-1 min-w-[140px] px-3 sm:px-6 py-4 font-semibold text-gray-600 hover:text-blue-600 transition text-sm sm:text-base">
+            <i class="fas fa-question-circle mr-1 sm:mr-2"></i><span class="hidden sm:inline">5 Porqués</span><span class="sm:hidden">5 Porqués</span>
           </button>
           <button onclick="showTab('plan')" id="tab-plan" class="flex-1 min-w-[140px] px-3 sm:px-6 py-4 font-semibold text-gray-600 hover:text-blue-600 transition text-sm sm:text-base">
             <i class="fas fa-tasks mr-1 sm:mr-2"></i><span class="hidden sm:inline">Plan de Acción</span><span class="sm:hidden">Plan</span>
@@ -921,7 +479,10 @@
           </div>
         </div>
         
-        <div class="mt-4 sm:mt-6 flex justify-end">
+        <div class="mt-4 sm:mt-6 flex justify-end gap-3">
+          <button onclick="clearCaptura()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition text-sm sm:text-base">
+            <i class="fas fa-eraser mr-2"></i>Limpiar
+          </button>
           <button onclick="saveCaptura()" class="std-button std-button-primary">
             <i class="fas fa-save"></i>
             <span>Guardar y Continuar</span>
@@ -933,10 +494,10 @@
     <!-- ===== Tab: 5 Porqués ===== -->
     <div id="content-5whys" class="hidden fade-in">
       <div class="bg-white rounded-xl shadow-md p-4 sm:p-6">
-        <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-1">
+        <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-4 sm:mb-6">
           <i class="fas fa-question-circle mr-2 text-blue-500"></i>Los 5 Porqués
         </h2>
-        <p class="text-gray-500 mb-3 text-sm">Pregunta "¿por qué?" repetidamente hasta encontrar la causa raíz.</p>
+        <p class="text-gray-500 mb-4 sm:mb-6 text-sm">Pregunta "¿por qué?" repetidamente hasta encontrar la causa raíz.</p>
 
         <div class="space-y-2" id="whysContainer">
 
@@ -1021,10 +582,14 @@
     <!-- ===== Tab: Ishikawa ===== -->
     <div id="content-ishikawa" class="hidden fade-in">
       <div class="bg-white rounded-xl shadow-md p-4 sm:p-6">
-        <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-2">
+        <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-4 sm:mb-6">
           <i class="fas fa-project-diagram mr-2 text-green-500"></i>Diagrama de Ishikawa
         </h2>
-        <p class="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Clasifica las causas en las 6 categorías: Máquina, Método, Materiales, Mano de obra, Medición, Medio ambiente.</p>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 sm:mb-6">
+          <h3 class="font-bold text-[#1e3a5f] mb-2 text-sm sm:text-base">¿Qué es y cómo funciona?</h3>
+          <p class="text-gray-700 text-sm sm:text-base mb-2">El Diagrama de Ishikawa (espina de pescado) organiza visualmente las causas potenciales de un problema en 6 categorías: <strong>Máquina, Método, Materiales, Mano de obra, Medición y Medio ambiente</strong>.</p>
+          <p class="text-gray-700 text-sm sm:text-base mb-0"><strong>Cómo usarlo:</strong> Escribe en cada categoría las causas que identificaste. Al guardar, el diagrama se genera automáticamente mostrando las categorías completadas. Haz clic en cualquier recuadro del diagrama para editar esa categoría.</p>
+        </div>
         
         <!-- Diagrama visual -->
         <div id="ishikawa-diagram" class="ishikawa-svg-wrap mb-6 sm:mb-8 hidden">
@@ -1168,33 +733,33 @@
         <!-- Formulario de categorías -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           <div class="bg-blue-50 rounded-lg p-3 sm:p-4 border border-blue-200">
-            <h3 class="font-bold text-blue-800 mb-2 text-sm sm:text-base"><i class="fas fa-cog mr-2"></i>Máquina</h3>
-            <textarea id="ishikawa-maquina" rows="3" class="std-textarea" placeholder="Fallas en equipos, desgaste, mantenimiento..."></textarea>
+            <h3 class="font-bold text-[#1e3a5f] mb-2 text-sm sm:text-base"><i class="fas fa-cog mr-2"></i>Máquina</h3>
+            <textarea id="ishikawa-maquina" rows="3" class="std-textarea" placeholder="Fallas en equipos, desgaste, mantenimiento..." autocomplete="off"></textarea>
           </div>
           
           <div class="bg-indigo-50 rounded-lg p-3 sm:p-4 border border-indigo-200">
-            <h3 class="font-bold text-indigo-800 mb-2 text-sm sm:text-base"><i class="fas fa-clipboard-list mr-2"></i>Método</h3>
-            <textarea id="ishikawa-metodo" rows="3" class="std-textarea" placeholder="Procedimientos, estándares, instrucciones..."></textarea>
+            <h3 class="font-bold text-[#1e3a5f] mb-2 text-sm sm:text-base"><i class="fas fa-clipboard-list mr-2"></i>Método</h3>
+            <textarea id="ishikawa-metodo" rows="3" class="std-textarea" placeholder="Procedimientos, estándares, instrucciones..." autocomplete="off"></textarea>
           </div>
           
           <div class="bg-purple-50 rounded-lg p-3 sm:p-4 border border-purple-200">
-            <h3 class="font-bold text-purple-800 mb-2 text-sm sm:text-base"><i class="fas fa-box mr-2"></i>Materiales</h3>
-            <textarea id="ishikawa-materiales" rows="3" class="std-textarea" placeholder="Repuestos, consumibles, calidad..."></textarea>
+            <h3 class="font-bold text-[#1e3a5f] mb-2 text-sm sm:text-base"><i class="fas fa-box mr-2"></i>Materiales</h3>
+            <textarea id="ishikawa-materiales" rows="3" class="std-textarea" placeholder="Repuestos, consumibles, calidad..." autocomplete="off"></textarea>
           </div>
           
           <div class="bg-pink-50 rounded-lg p-3 sm:p-4 border border-pink-200">
-            <h3 class="font-bold text-pink-800 mb-2 text-sm sm:text-base"><i class="fas fa-users mr-2"></i>Mano de obra</h3>
-            <textarea id="ishikawa-manoObra" rows="3" class="std-textarea" placeholder="Capacitación, fatiga, errores..."></textarea>
+            <h3 class="font-bold text-[#1e3a5f] mb-2 text-sm sm:text-base"><i class="fas fa-users mr-2"></i>Mano de obra</h3>
+            <textarea id="ishikawa-manoObra" rows="3" class="std-textarea" placeholder="Capacitación, fatiga, errores..." autocomplete="off"></textarea>
           </div>
           
           <div class="bg-orange-50 rounded-lg p-3 sm:p-4 border border-orange-200">
-            <h3 class="font-bold text-orange-800 mb-2 text-sm sm:text-base"><i class="fas fa-chart-line mr-2"></i>Medición</h3>
-            <textarea id="ishikawa-medicion" rows="3" class="std-textarea" placeholder="Sensores, inspecciones, datos..."></textarea>
+            <h3 class="font-bold text-[#1e3a5f] mb-2 text-sm sm:text-base"><i class="fas fa-chart-line mr-2"></i>Medición</h3>
+            <textarea id="ishikawa-medicion" rows="3" class="std-textarea" placeholder="Sensores, inspecciones, datos..." autocomplete="off"></textarea>
           </div>
           
           <div class="bg-green-50 rounded-lg p-3 sm:p-4 border border-green-200">
-            <h3 class="font-bold text-green-800 mb-2 text-sm sm:text-base"><i class="fas fa-leaf mr-2"></i>Medio ambiente</h3>
-            <textarea id="ishikawa-medioAmbiente" rows="3" class="std-textarea" placeholder="Temperatura, humedad, condiciones..."></textarea>
+            <h3 class="font-bold text-[#1e3a5f] mb-2 text-sm sm:text-base"><i class="fas fa-leaf mr-2"></i>Medio ambiente</h3>
+            <textarea id="ishikawa-medioAmbiente" rows="3" class="std-textarea" placeholder="Temperatura, humedad, condiciones..." autocomplete="off"></textarea>
           </div>
         </div>
         
@@ -1215,12 +780,12 @@
         <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-4 sm:mb-6">
           <i class="fas fa-chart-bar mr-2 text-purple-500"></i>Diagrama de Pareto
         </h2>
-        <p class="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Análisis de tipos de fallas más frecuentes registradas en un periodo de tiempo (ej. último mes). El principio de Pareto indica que el 80% de los problemas provienen del 20% de las causas.</p>
+        <p class="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed">Análisis de tipos de fallas más frecuentes registradas en un periodo de tiempo (ej. último mes). El principio de Pareto indica que el 80% de los problemas provienen del 20% de las causas.</p>
         
         <!-- Formulario para agregar categorías de fallas -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <div>
-            <h3 class="font-semibold text-gray-800 mb-3 text-sm sm:text-base">Agregar Categoría de Falla</h3>
+            <h3 class="font-bold text-[#1e3a5f] mb-3 text-sm sm:text-base">Agregar Categoría de Falla</h3>
             <div class="space-y-3">
               <div class="flex gap-2">
                 <input type="text" id="pareto-causa" placeholder="Ej. Obstrucciones/Suciedad" class="std-input">
@@ -1243,7 +808,7 @@
           </div>
           
           <div>
-            <h3 class="font-semibold text-gray-800 mb-3 text-sm sm:text-base">Estadísticas</h3>
+            <h3 class="font-bold text-[#1e3a5f] mb-3 text-sm sm:text-base">Estadísticas</h3>
             <div class="bg-purple-50 rounded-lg p-4 space-y-2">
               <div class="flex justify-between">
                 <span class="text-sm font-medium text-gray-700">Total de categorías:</span>
@@ -1281,14 +846,14 @@
     <!-- ===== Tab: Plan de Acción ===== -->
     <div id="content-plan" class="hidden fade-in">
       <div class="bg-white rounded-xl shadow-md p-4 sm:p-6">
-        <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-2">
+        <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-4 sm:mb-6">
           <i class="fas fa-tasks mr-2 text-red-500"></i>Plan de Acción
         </h2>
-        <p class="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Define las acciones correctivas y preventivas basadas en la causa raíz identificada.</p>
+        <p class="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed">Define las acciones correctivas y preventivas basadas en la causa raíz identificada.</p>
         
         <!-- Resumen del análisis -->
         <div class="bg-gray-50 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
-          <h3 class="font-semibold text-gray-800 mb-2 sm:mb-3 text-sm sm:text-base">Resumen del Análisis</h3>
+          <h3 class="font-bold text-[#1e3a5f] mb-3 text-sm sm:text-base">Resumen del Análisis</h3>
           <div id="resumenAnalisis" class="text-sm sm:text-base text-gray-600 space-y-2">
             <p><strong>Problema:</strong> <span id="resumenProblema">No definido</span></p>
             <p><strong>Causa Raíz:</strong> <span id="resumenCausa">No definida</span></p>
@@ -1298,7 +863,7 @@
         <!-- Acciones -->
         <div class="mb-4 sm:mb-6">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2">
-            <h3 class="font-semibold text-gray-800 text-sm sm:text-base">Acciones Correctivas</h3>
+            <h3 class="font-bold text-[#1e3a5f] text-sm sm:text-base">Acciones Correctivas</h3>
             <button onclick="addAccion('correctiva')" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition shadow-md text-sm sm:text-base w-full sm:w-auto">
             <i class="fas fa-plus mr-2"></i>Agregar
           </button>
@@ -1310,7 +875,7 @@
         
         <div class="mb-4 sm:mb-6">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2">
-            <h3 class="font-semibold text-gray-800 text-sm sm:text-base">Acciones Preventivas</h3>
+            <h3 class="font-bold text-[#1e3a5f] text-sm sm:text-base">Acciones Preventivas</h3>
             <button onclick="addAccion('preventiva')" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition shadow-md text-sm sm:text-base w-full sm:w-auto">
             <i class="fas fa-plus mr-2"></i>Agregar
           </button>
@@ -1320,22 +885,28 @@
           </div>
         </div>
         
-        <div class="mt-4 sm:mt-6 flex justify-end gap-3 flex-wrap">
-          <button onclick="handlePDFExport()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition text-sm sm:text-base">
-            <i class="fas fa-file-pdf mr-2"></i>Exportar PDF
-          </button>
-          <button onclick="exportExcel()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition text-sm sm:text-base">
-            <i class="fas fa-file-excel mr-2"></i>Exportar Excel
-          </button>
-        </div>
       </div>
     </div>
   </main>
 
   <!-- ===== Footer ===== -->
-  <footer class="bg-gray-800 text-gray-400 py-4 sm:py-6 mt-auto">
-    <div class="max-w-8xl xl:max-w-9xl mx-auto px-4 sm:px-6 text-center text-xs sm:text-sm">
-      <p>Herramienta de Análisis Causa Raíz · Generado para gestión de mantenimiento y confiabilidad</p>
+  <footer class="bg-gray-800 text-gray-400 py-3 sm:py-4 mt-auto">
+    <div class="max-w-8xl xl:max-w-9xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+      <p class="text-xs sm:text-sm">Herramienta de Análisis Causa Raíz · Generado para gestión de mantenimiento y confiabilidad</p>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button onclick="handlePDFExport()" class="bg-blue-700/30 hover:bg-blue-700/50 text-blue-300 font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg transition text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2">
+          <i class="fas fa-file-pdf"></i>
+          <span class="hidden sm:inline">Exportar PDF</span>
+        </button>
+        <button onclick="exportExcel()" class="bg-green-700/30 hover:bg-green-700/50 text-green-300 font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg transition text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2">
+          <i class="fas fa-file-excel"></i>
+          <span class="hidden sm:inline">Exportar Excel</span>
+        </button>
+        <button id="clearAllBtn" onclick="clearAll()" class="bg-red-700/30 hover:bg-red-700/50 text-red-300 font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg transition text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 hidden">
+          <i class="fas fa-trash-alt"></i>
+          <span>Limpiar Todo</span>
+        </button>
+      </div>
     </div>
   </footer>
 
@@ -1350,8 +921,25 @@
       acciones: { correctivas: [], preventivas: [] }
     };
 
-    // Datos del diagrama de Pareto
-    let paretoData = [];
+    // Datos del diagrama de Pareto (machine-specific)
+    let paretoData = {};
+
+    // Helper functions for machine-specific Pareto data
+    function getCurrentMachine() {
+      return rcaData.captura?.maquina || '';
+    }
+
+    function getCurrentParetoData() {
+      const machine = getCurrentMachine();
+      return paretoData[machine] || [];
+    }
+
+    function setCurrentParetoData(data) {
+      const machine = getCurrentMachine();
+      if (machine) {
+        paretoData[machine] = data;
+      }
+    }
 
     const ISHIKAWA_CATEGORY_CONFIG = {
       maquina: { label: 'Máquina', icon: 'fas fa-cog' },
@@ -1476,88 +1064,6 @@
       if (causeText) causeText.textContent = problema || 'No definido';
     }
 
-    function applyWhysIfNeeded(suggestions = []) {
-      const currentWhys = getWhyTexts();
-      const mergedWhys = [];
-
-      for (let i = 0; i < 5; i++) {
-        mergedWhys[i] = currentWhys[i] || suggestions[i] || '';
-        const field = document.getElementById(`why${i + 1}`);
-        if (field) {
-          field.value = mergedWhys[i];
-        }
-        rcaData.whys[`why${i + 1}`] = mergedWhys[i];
-      }
-
-      updateRootCauseSummary();
-    }
-
-    function buildWhysFromIshikawa() {
-      const entries = getFilledIshikawaEntries();
-      if (entries.length === 0) return [];
-
-      const principal = entries[0];
-      const secondary = entries[1] || principal;
-      const tertiary = entries[2] || secondary;
-
-      return [
-        `El problema se relaciona con ${principal.label.toLowerCase()}: ${truncateText(principal.value, 110)}.`,
-        `La condición se originó por factores en ${secondary.label.toLowerCase()}: ${truncateText(secondary.value, 110)}.`,
-        `Se detectaron elementos asociados como ${truncateText(tertiary.value, 110)}.`,
-        `La recurrencia apunta a una falta de control sobre ${principal.label.toLowerCase()}.`,
-        `Causa raíz probable: ${principal.label.toLowerCase()} - ${truncateText(principal.value, 120)}.`
-      ];
-    }
-
-    function buildWhysFromPareto() {
-      const sortedItems = getSortedParetoItems();
-
-      if (sortedItems.length === 0) return [];
-
-      const first = sortedItems[0];
-      const second = sortedItems[1] || first;
-      const third = sortedItems[2] || second;
-      const fourth = sortedItems[3] || third;
-
-      return [
-        `El problema principal reportado es ${truncateText(first.causa, 110)}.`,
-        `La segunda causa relacionada es ${truncateText(second.causa, 110)}.`,
-        `También influye ${truncateText(third.causa, 110)}.`,
-        `La recurrencia se mantiene por ${truncateText(fourth.causa, 110)}.`,
-        `Causa raíz probable: ${truncateText(first.causa, 120)}.`
-      ];
-    }
-
-    function buildParetoItemsFromIshikawa() {
-      const weights = {
-        maquina: 5,
-        metodo: 5,
-        materiales: 4,
-        manoObra: 4,
-        medicion: 3,
-        medioAmbiente: 3
-      };
-
-      return getFilledIshikawaEntries().map(entry => ({
-        causa: `${entry.label}: ${truncateText(entry.value, 70)}`,
-        frecuencia: weights[entry.categoryKey] || 3
-      }));
-    }
-
-    function buildParetoItemsFromWhys() {
-      return CATEGORY_ORDER
-        .map(categoryKey => ({
-          categoryKey,
-          label: ISHIKAWA_CATEGORY_CONFIG[categoryKey].label,
-          value: (document.getElementById(`ishikawa-${categoryKey}`)?.value || '').trim()
-        }))
-        .filter(entry => entry.value)
-        .map(entry => ({
-          causa: `${entry.label}: ${truncateText(entry.value, 70)}`,
-          frecuencia: entry.value.split(',').filter(Boolean).length || 1
-        }));
-    }
-
     function mergeParetoItems(existingItems = [], newItems = []) {
       const merged = new Map();
 
@@ -1596,13 +1102,11 @@
         .filter(item => item.causa && item.frecuencia > 0 && item.source !== 'automatico');
     }
 
-    function getSortedParetoItems() {
-      return normalizeParetoItems(paretoData).sort((a, b) => b.frecuencia - a.frecuencia);
-    }
-
     function syncParetoState() {
-      paretoData = normalizeParetoItems(paretoData);
-      rcaData.pareto = [...paretoData];
+      const currentData = getCurrentParetoData();
+      const normalizedData = normalizeParetoItems(currentData);
+      setCurrentParetoData(normalizedData);
+      rcaData.pareto = [...normalizedData];
     }
 
     function refreshParetoUI() {
@@ -1613,7 +1117,8 @@
 
       const diagram = document.getElementById('pareto-diagram');
       if (diagram) {
-        const hasVisibleData = paretoData.length > 0;
+        const currentData = getCurrentParetoData();
+        const hasVisibleData = currentData.length > 0;
         diagram.classList.toggle('hidden', !hasVisibleData);
       }
     }
@@ -1657,6 +1162,7 @@
         preventivas: getAccionesFromDOM('preventiva')
       };
       localStorage.setItem('rcaData', JSON.stringify(rcaData));
+      localStorage.setItem('paretoData', JSON.stringify(paretoData));
       updateClearAllButton();
     }
 
@@ -1670,19 +1176,19 @@
         <div class="accion-card bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-3 items-end">
             <div class="lg:col-span-5">
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Descripción</label>
+              <label class="std-label">Descripción</label>
               <input type="text" id="accion-${tipo}-${index}-desc" value="${descripcion}" class="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base" placeholder="Describa la acción...">
             </div>
             <div class="lg:col-span-2">
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Responsable</label>
+              <label class="std-label">Responsable</label>
               <input type="text" id="accion-${tipo}-${index}-resp" value="${responsable}" class="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base" placeholder="Nombre...">
             </div>
             <div class="lg:col-span-2">
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha límite</label>
+              <label class="std-label">Fecha límite</label>
               <input type="date" id="accion-${tipo}-${index}-fecha" value="${fecha}" class="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base">
             </div>
             <div class="select-wrapper lg:col-span-2">
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Prioridad</label>
+              <label class="std-label">Prioridad</label>
               <select id="accion-${tipo}-${index}-prio" class="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base enhanced-select">
                 <option value="alta" ${prioridad === 'alta' ? 'selected' : ''}>Alta</option>
                 <option value="media" ${prioridad === 'media' ? 'selected' : ''}>Media</option>
@@ -1736,7 +1242,8 @@
       const ishikawaMedioAmbiente = document.getElementById('ishikawa-medioAmbiente')?.value;
 
       // Verificar si hay datos en Pareto
-      const hasParetoData = paretoData && paretoData.length > 0;
+      const currentParetoData = getCurrentParetoData();
+      const hasParetoData = currentParetoData && currentParetoData.length > 0;
 
       // Verificar si hay acciones
       const accionesCorrectivas = document.getElementById('accionesCorrectivas')?.children.length || 0;
@@ -1781,7 +1288,6 @@
         if (whyField) {
           whyField.addEventListener('input', updateClearAllButton);
           whyField.addEventListener('change', updateClearAllButton);
-          whyField.addEventListener('change', syncWhysToIshikawa);
         }
       }
 
@@ -1828,11 +1334,6 @@
         syncPlanFromAnalysis();
       }
       
-      // Sincronizar 5 Porqués a Ishikawa al cambiar al tab de Ishikawa
-      if (tabName === 'ishikawa') {
-        syncWhysToIshikawa();
-      }
-      
       // Actualizar diagrama de Pareto si es el tab de Pareto
       if (tabName === 'pareto') {
         setTimeout(() => {
@@ -1843,7 +1344,7 @@
 
     function updateTabLockState() {
       const capturaCompleta = !!(rcaData.captura && rcaData.captura.problema);
-      const lockedTabs = ['5whys', 'ishikawa', 'pareto', 'plan'];
+      const lockedTabs = ['5whys', 'ishikawa', 'plan'];
       lockedTabs.forEach(tabName => {
         const btn = document.getElementById(`tab-${tabName}`);
         if (!btn) return;
@@ -1869,14 +1370,14 @@
       };
       
       if (!rcaData.captura.problema) {
-        alert('Por favor describe el problema antes de continuar.');
+        alert('Describe el problema antes de continuar.');
         return;
       }
       
       syncPlanFromAnalysis();
       persistCurrentState();
       updateTabLockState();
-      showTab('5whys');
+      showTab('ishikawa');
     }
 
     // Guardar 5 porqués
@@ -1888,15 +1389,25 @@
       // Actualizar resumen de causa raíz
       updateRootCauseSummary();
       
-      // Sincronizar con Ishikawa
-      syncWhysToIshikawa();
-      
       // Sincronizar con Pareto
       syncWhysToPareto();
       
       syncPlanFromAnalysis();
       persistCurrentState();
-      alert('5 Porqués guardados y sincronizados correctamente.');
+
+    }
+
+    // Limpiar captura
+    function clearCaptura() {
+      document.getElementById('fechaEvento').value = '';
+      document.getElementById('maquina').value = '';
+      document.getElementById('tiempoParo').value = '';
+      document.getElementById('descripcionProblema').value = '';
+      document.getElementById('sintomas').value = '';
+      document.getElementById('responsable').value = '';
+      rcaData.captura = {};
+      syncPlanFromAnalysis();
+      persistCurrentState();
     }
 
     // Limpiar 5 porqués
@@ -1923,7 +1434,7 @@
 
       if (emptyCategories.length > 0) {
         const missingNames = emptyCategories.map(cat => ISHIKAWA_CATEGORY_CONFIG[cat].label).join(', ');
-        alert(`Por favor completa todas las categorías del diagrama de Ishikawa antes de guardar.\n\nCategorías faltantes: ${missingNames}`);
+        alert(`Completa todas las categorías del Ishikawa antes de guardar:\n\n${missingNames}`);
         return;
       }
 
@@ -1935,12 +1446,9 @@
       });
       refreshIshikawaDiagram();
 
-      // Sincronizar con 5 Porqués
-      syncIshikawaToWhys();
-
       syncPlanFromAnalysis();
       persistCurrentState();
-      alert('Diagrama Ishikawa guardado y sincronizado correctamente.');
+
     }
 
     // Limpiar Ishikawa
@@ -2027,59 +1535,6 @@
       return phrases.slice(0, 3);
     }
     
-    function syncWhysToIshikawa() {
-      const whyTexts = getWhyTexts().filter(Boolean);
-      if (whyTexts.length === 0) return;
-
-      const allKeywords = [];
-      whyTexts.forEach(text => {
-        allKeywords.push(...extractKeywords(text));
-      });
-
-      const uniqueKeywords = [];
-      const seen = new Set();
-      allKeywords.forEach(kw => {
-        const n = normalizeText(kw);
-        if (!seen.has(n)) { seen.add(n); uniqueKeywords.push(kw); }
-      });
-
-      if (uniqueKeywords.length === 0) return;
-
-      const assignments = {};
-      uniqueKeywords.forEach((kw, index) => {
-        const catKey = CATEGORY_ORDER[index % CATEGORY_ORDER.length];
-        if (!assignments[catKey]) assignments[catKey] = [];
-        assignments[catKey].push(kw);
-      });
-
-      CATEGORY_ORDER.forEach(categoryKey => {
-        const field = document.getElementById(`ishikawa-${categoryKey}`);
-        if (!field) return;
-
-        const newItems = assignments[categoryKey] || [];
-        const currentValue = field.value.trim();
-        const existing = currentValue ? currentValue.split('\n').map(l => l.trim()).filter(Boolean) : [];
-        const allLines = [...existing];
-        newItems.forEach(item => {
-          if (!allLines.some(l => normalizeText(l) === normalizeText(item))) {
-            allLines.push(item);
-          }
-        });
-
-        const mergedValue = allLines.join('\n');
-        field.value = mergedValue;
-        rcaData.ishikawa[categoryKey] = mergedValue;
-      });
-
-      const detectedCategories = {};
-      CATEGORY_ORDER.forEach(categoryKey => {
-        detectedCategories[categoryKey] = !!(rcaData.ishikawa[categoryKey] || '').trim();
-      });
-
-      refreshIshikawaDiagram();
-      updateIshikawaDiagram(detectedCategories);
-    }
-    
     // Actualizar diagrama visual de Ishikawa con detección de palabras clave
     function updateIshikawaDiagram(detectedCategories) {
       CATEGORY_ORDER.forEach(cat => {
@@ -2101,16 +1556,6 @@
     
     // Sincronizar 5 Porqués hacia Pareto
     function syncWhysToPareto() {
-      refreshParetoUI();
-    }
-    
-    // Sincronizar Ishikawa hacia 5 Porqués
-    function syncIshikawaToWhys() {
-      applyWhysIfNeeded(buildWhysFromIshikawa());
-    }
-    
-    // Sincronizar Ishikawa hacia Pareto
-    function syncIshikawaToPareto() {
       refreshParetoUI();
     }
     
@@ -2276,10 +1721,6 @@
       const datas = rcaData.captura;
       const whys = rcaData.whys;
       const ishikawa = rcaData.ishikawa;
-      const nombresCategoria = {
-        maquina: 'Máquina', metodo: 'Método', materiales: 'Materiales',
-        manoObra: 'Mano de obra', medicion: 'Medición', medioAmbiente: 'Medio ambiente'
-      };
 
       const datosCompletos = [[
         'Fecha', 'Máquina', 'Tiempo de paro (min)', 'Problema', 'Síntomas', 'Responsable',
@@ -2313,8 +1754,9 @@
       XLSX.utils.book_append_sheet(workbook, datosCompletosSheet, 'Datos Completos');
 
       // Hoja adicional: Análisis de Pareto (categorías de fallas)
-      if (paretoData && paretoData.length > 0) {
-        const sortedPareto = [...paretoData].sort((a, b) => b.frecuencia - a.frecuencia);
+      const currentParetoData = getCurrentParetoData();
+      if (currentParetoData && currentParetoData.length > 0) {
+        const sortedPareto = [...currentParetoData].sort((a, b) => b.frecuencia - a.frecuencia);
         const totalFreq = sortedPareto.reduce((sum, item) => sum + item.frecuencia, 0);
         let acumulado = 0;
 
@@ -2405,20 +1847,17 @@
           // Cerrar el archivo
           await writable.close();
 
-          alert(existingWorkbook ? 'Archivo actualizado exitosamente (nuevos datos agregados)' : 'Archivo guardado exitosamente');
         } catch (error) {
           console.error('Error al guardar el archivo:', error);
-          if (error.name === 'AbortError') {
-            alert('El usuario canceló la operación');
-          } else {
-            alert('Error al guardar el archivo: ' + error.message);
+          if (error.name !== 'AbortError') {
+            alert('Error al guardar: ' + error.message);
           }
         }
       } else {
         // Fallback para navegadores que no soportan File System Access API
         const fileName = 'Diagnostico_Fallas.xlsx';
         XLSX.writeFile(workbook, fileName);
-        alert('Archivo descargado. Nota: Para actualizar el archivo existente automáticamente, usa un navegador moderno como Chrome o Edge.');
+
       }
     }
 
@@ -2426,7 +1865,7 @@
     function handlePDFExport() {
       exportPDF().catch(error => {
         console.error('Error al exportar PDF:', error);
-        alert('Error al generar el PDF. Por favor intenta nuevamente.');
+        alert('Error al generar el PDF.');
       });
     }
 
@@ -2582,66 +2021,6 @@
       // Agregar encabezado inicial
       addHeader();
 
-      // Función para capturar diagrama exacto como imagen
-      function captureExactDiagram(elementId) {
-        return new Promise((resolve) => {
-          const element = document.getElementById(elementId);
-          if (!element) {
-            console.warn(`Elemento ${elementId} no encontrado`);
-            resolve(createSimplifiedDiagram(elementId));
-            return;
-          }
-          
-          // Usar html2canvas para captura exacta con configuración robusta
-          if (window.html2canvas) {
-            window.html2canvas(element, {
-              backgroundColor: '#ffffff',
-              scale: 2, // Mayor escala para mejor visibilidad
-              useCORS: true,
-              allowTaint: false, // Evitar tainted canvas
-              logging: false,
-              width: element.offsetWidth + 50, // Extra espacio para asegurar visibilidad
-              height: element.offsetHeight + 50,
-              scrollX: -25,
-              scrollY: -25,
-              removeContainer: true
-            }).then(canvas => {
-              try {
-                // Intentar generar PNG con menor calidad si hay problemas
-                let imgData;
-                try {
-                  imgData = canvas.toDataURL('image/png', 0.8);
-                } catch (pngError) {
-                  console.warn('Error generando PNG, intentando con JPEG:', pngError);
-                  imgData = canvas.toDataURL('image/jpeg', 0.8);
-                }
-                
-                resolve({ imgData, width: canvas.width, height: canvas.height });
-              } catch (error) {
-                console.error('Error procesando canvas:', error);
-                resolve(createSimplifiedDiagram(elementId));
-              }
-            }).catch(error => {
-              console.error('Error capturando diagrama con html2canvas:', error);
-              resolve(createSimplifiedDiagram(elementId));
-            });
-          } else {
-            console.warn('html2canvas no disponible, usando diagrama simplificado');
-            resolve(createSimplifiedDiagram(elementId));
-          }
-        });
-      }
-      
-      // Función para crear representación simplificada de diagramas (fallback)
-      function createSimplifiedDiagram(elementId) {
-        if (elementId.includes('ishikawa')) {
-          return createSimplifiedIshikawa();
-        } else if (elementId.includes('pareto')) {
-          return createSimplifiedPareto();
-        }
-        return null;
-      }
-      
       // Función para crear diagrama Ishikawa simplificado
       function createSimplifiedIshikawa() {
         const canvas = document.createElement('canvas');
@@ -2868,7 +2247,8 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Obtener datos del Pareto
-        const paretoItems = paretoData && paretoData.length > 0 ? [...paretoData] : [];
+        const currentParetoData = getCurrentParetoData();
+        const paretoItems = currentParetoData && currentParetoData.length > 0 ? [...currentParetoData] : [];
 
         if (paretoItems.length === 0) {
           ctx.font = '12px Arial';
@@ -3195,7 +2575,8 @@
       addSectionTitle('4. ANÁLISIS DE PARETO');
 
       // Obtener datos del Pareto (solo categorías de fallas)
-      const paretoItems = paretoData && paretoData.length > 0 ? [...paretoData] : [];
+      const currentParetoData = getCurrentParetoData();
+      const paretoItems = currentParetoData && currentParetoData.length > 0 ? [...currentParetoData] : [];
 
       if (paretoItems.length > 0) {
         // Usar el diagrama simplificado (fallback) en lugar de html2canvas
@@ -3316,90 +2697,10 @@
       
       } catch (error) {
         console.error('Error en exportación PDF:', error);
-        alert('Error al generar el PDF: ' + error.message);
+        alert('Error al generar el PDF.');
       }
     }
 
-    // Agregar elemento al diagrama de Pareto
-    function addParetoItem() {
-      const causa = document.getElementById('pareto-causa').value.trim();
-      const frecuencia = parseInt(document.getElementById('pareto-frecuencia').value) || 0;
-      
-      if (!causa || frecuencia <= 0) {
-        alert('Por favor ingresa una causa válida y una frecuencia mayor a 0.');
-        return;
-      }
-      
-      // Agregar al array
-      paretoData.push({ causa, frecuencia });
-      
-      // Limpiar campos
-      document.getElementById('pareto-causa').value = '';
-      document.getElementById('pareto-frecuencia').value = '';
-      
-      // Actualizar vista
-      updateParetoList();
-      updateParetoChart();
-      updateParetoStats();
-    }
-    
-    // Eliminar elemento del diagrama de Pareto
-    function removeParetoItem(index) {
-      paretoData.splice(index, 1);
-      updateParetoList();
-      updateParetoChart();
-      updateParetoStats();
-    }
-    
-    // Actualizar lista de elementos
-    function updateParetoList() {
-      const list = document.getElementById('pareto-list');
-      list.innerHTML = '';
-      
-      paretoData.forEach((item, index) => {
-        const itemHTML = `
-          <div class="flex items-center justify-between bg-white p-2 rounded border border-gray-200">
-            <div class="flex-1">
-              <span class="font-medium text-sm">${item.causa}</span>
-              <span class="ml-2 text-purple-600 font-semibold text-sm">(${item.frecuencia})</span>
-            </div>
-            <button onclick="removeParetoItem(${index})" class="text-red-500 hover:text-red-700 ml-2">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-        `;
-        list.insertAdjacentHTML('beforeend', itemHTML);
-      });
-      
-      if (paretoData.length === 0) {
-        list.innerHTML = '<p class="text-gray-500 text-sm italic">No hay causas agregadas</p>';
-      }
-    }
-    
-    // Actualizar estadísticas
-    function updateParetoStats() {
-      const totalCausas = paretoData.length;
-      const totalFrecuencias = paretoData.reduce((sum, item) => sum + item.frecuencia, 0);
-      
-      // Ordenar por frecuencia descendente
-      const sortedData = [...paretoData].sort((a, b) => b.frecuencia - a.frecuencia);
-      
-      // Calcular acumulado y causas críticas (80%)
-      let acumulado = 0;
-      let causasCriticas = 0;
-      
-      sortedData.forEach(item => {
-        acumulado += item.frecuencia;
-        if (acumulado <= totalFrecuencias * 0.8) {
-          causasCriticas++;
-        }
-      });
-      
-      document.getElementById('pareto-total-causas').textContent = totalCausas;
-      document.getElementById('pareto-total-frecuencias').textContent = totalFrecuencias;
-      document.getElementById('pareto-criticas').textContent = causasCriticas;
-    }
-    
     // Diagrama de Pareto simple y limpio
     function updateParetoChart() {
       const chart = document.getElementById('pareto-chart-simple');
@@ -3407,7 +2708,7 @@
       chart.innerHTML = '';
       
       // Obtener datos de categorías de fallas del tab de Pareto
-      const failureCategories = paretoData || [];
+      const failureCategories = getCurrentParetoData() || [];
       
       // Crear datos para el diagrama
       const data = failureCategories.map(item => ({
@@ -3681,11 +2982,13 @@
       const frecuencia = parseInt(document.getElementById('pareto-frecuencia').value, 10) || 0;
       
       if (!causa || frecuencia <= 0) {
-        alert('Por favor ingresa una causa válida y una frecuencia mayor a 0.');
+        alert('Ingresa una causa y frecuencia mayor a 0.');
         return;
       }
 
-      paretoData = mergeParetoItems(paretoData, [{ causa, frecuencia }]);
+      const currentData = getCurrentParetoData();
+      const mergedData = mergeParetoItems(currentData, [{ causa, frecuencia }]);
+      setCurrentParetoData(mergedData);
       
       document.getElementById('pareto-causa').value = '';
       document.getElementById('pareto-frecuencia').value = '';
@@ -3702,12 +3005,13 @@
 
       list.innerHTML = '';
 
-      paretoData.forEach((item, index) => {
+      const currentData = getCurrentParetoData();
+      currentData.forEach((item, index) => {
         const itemDiv = createParetoListItem('', item.causa, item.frecuencia, true, index);
         list.appendChild(itemDiv);
       });
 
-      if (paretoData.length === 0) {
+      if (currentData.length === 0) {
         list.innerHTML = '<p class="text-gray-500 text-sm italic">No hay categorías de fallas agregadas</p>';
       }
     }
@@ -3732,8 +3036,10 @@
     
     // Eliminar causa adicional de Pareto
     function removeParetoItem(index) {
-      if (index >= 0 && index < paretoData.length) {
-        paretoData.splice(index, 1);
+      const currentData = getCurrentParetoData();
+      if (index >= 0 && index < currentData.length) {
+        currentData.splice(index, 1);
+        setCurrentParetoData(currentData);
         refreshParetoUI();
         syncPlanFromAnalysis();
         persistCurrentState();
@@ -3742,7 +3048,8 @@
     
     // Actualizar estadísticas
     function updateParetoStats() {
-      const allData = paretoData.filter(item => item.frecuencia > 0);
+      const currentData = getCurrentParetoData();
+      const allData = currentData.filter(item => item.frecuencia > 0);
 
       const totalCausas = allData.length;
       const totalFrecuencias = allData.reduce((sum, item) => sum + item.frecuencia, 0);
@@ -3766,7 +3073,7 @@
     // Limpiar diagrama
     function clearPareto() {
       if (confirm('¿Estás seguro de que quieres limpiar todos los datos del diagrama de Pareto?')) {
-        paretoData = [];
+        setCurrentParetoData([]);
         refreshParetoUI();
         syncPlanFromAnalysis();
         persistCurrentState();
@@ -3813,7 +3120,7 @@ Esta acción no se puede deshacer.`;
         });
 
         // Limpiar Pareto
-        paretoData = [];
+        setCurrentParetoData([]);
         refreshParetoUI();
         
         // Ocultar el diagrama visual de Pareto
@@ -3851,8 +3158,7 @@ Esta acción no se puede deshacer.`;
         // Ocultar botón Limpiar Todo
         updateClearAllButton();
 
-        // Mensaje de confirmación
-        alert('Análisis limpiado completamente. Puedes empezar un nuevo análisis.');
+
       }
     }
     
@@ -3862,7 +3168,7 @@ Esta acción no se puede deshacer.`;
       refreshParetoUI();
       syncPlanFromAnalysis();
       persistCurrentState();
-      alert('Diagrama de Pareto guardado correctamente.');
+
     }
     
     // Inicializar datepicker
@@ -3958,14 +3264,6 @@ Esta acción no se puede deshacer.`;
       // Inicializar datepicker primero
       initializeDatePicker();
       
-      // Probar el campo responsable
-      const responsableField = document.getElementById('responsable');
-      if (responsableField) {
-        responsableField.addEventListener('input', function() {
-          console.log('Campo responsable funciona:', this.value);
-        });
-      }
-      
       const saved = localStorage.getItem('rcaData');
       if (saved) {
         rcaData = JSON.parse(saved);
@@ -3974,6 +3272,12 @@ Esta acción no se puede deshacer.`;
         rcaData.ishikawa = rcaData.ishikawa || {};
         rcaData.pareto = rcaData.pareto || [];
         rcaData.acciones = rcaData.acciones || { correctivas: [], preventivas: [] };
+        
+        // Restaurar datos de Pareto machine-specific
+        const savedParetoData = localStorage.getItem('paretoData');
+        if (savedParetoData) {
+          paretoData = JSON.parse(savedParetoData);
+        }
         
         // Restaurar captura
         if (rcaData.captura.fecha) document.getElementById('fechaEvento').value = rcaData.captura.fecha;
@@ -3998,9 +3302,9 @@ Esta acción no se puede deshacer.`;
         });
         refreshIshikawaDiagram();
         
-        // Restaurar datos de Pareto
+        // Restaurar datos de Pareto para la máquina actual
         if (rcaData.pareto && rcaData.pareto.length > 0) {
-          paretoData = normalizeParetoItems(rcaData.pareto);
+          setCurrentParetoData(normalizeParetoItems(rcaData.pareto));
         }
         
         // Restaurar acciones
