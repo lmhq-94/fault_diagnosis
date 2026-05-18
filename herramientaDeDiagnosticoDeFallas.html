@@ -46,7 +46,6 @@
       top: 88px; /* Altura del header */
       z-index: 40;
       background: white;
-      border-bottom: 1px solid #e5e7eb;
     }
 
     /* Footer sticky */
@@ -86,8 +85,6 @@
     .ish-problem-label { font-size: 10px; font-weight: 700; color: white; letter-spacing: 0.8px; margin-bottom: 4px; }
     .ish-problem-divider { width: 100%; height: 1px; background: rgba(255,255,255,0.2); margin-bottom: 6px; }
     .ish-problem-text { font-size: 11px; color: #93c5fd; text-align: center; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; line-height: 1.4; max-width: 200px; width: 100%; }
-    .pareto-diagram-box { height: 450px; position: relative; }
-    .pareto-diagram-box > div { width: 100%; height: 100%; }
     .why-card {
       position: relative;
       width: 100%;
@@ -96,8 +93,6 @@
       border-radius: 12px;
       overflow: hidden;
     }
-    
-
     
     .why-card {
       transition: all 0.3s ease;
@@ -141,9 +136,6 @@
       animation: fadeIn 0.3s ease-out;
     }
     
-
-    
-    /* Estilos para datepicker */
     input[type="date"] {
       cursor: pointer;
     }
@@ -152,9 +144,6 @@
       cursor: pointer;
     }
     
-
-
-    /* Estilos mejorados para selects/dropdowns */
     select {
       appearance: none;
       background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
@@ -166,29 +155,22 @@
       transition: all 0.2s ease;
       position: relative;
       z-index: 1;
-      /* Forzar que el dropdown se abra hacia abajo */
       direction: ltr;
     }
-
-    /* Estilo específico cuando el select está activo/focado */
+    
     select:focus {
       position: relative;
       z-index: 1000;
-      /* Asegurar que el dropdown aparezca debajo */
       transform: translateY(0);
     }
-
-    /* Contenedor con padding inferior para espacio del dropdown */
+    
     .select-wrapper {
       position: relative;
       z-index: 10;
-      padding-bottom: 0; /* Eliminado para no bloquear otros campos */
-      margin-bottom: 0; /* Eliminado para no bloquear otros campos */
+      padding-bottom: 0;
+      margin-bottom: 0;
     }
-
-
-
-    /* Standardized input and button styles */
+    
     .std-input {
       width: 100%;
       padding: 12px 16px;
@@ -308,62 +290,55 @@
     .std-input-sm-fixed {
       width: 100px;
     }
-
-    /* Contenedor principal con suficiente espacio */
+    
     main {
       overflow: visible !important;
     }
-
-    /* Asegurar que los contenedores de los selects no corten el dropdown */
+    
     .bg-white.rounded-xl.shadow-md {
       overflow: visible !important;
     }
-
+    
     .grid {
       overflow: visible !important;
     }
-
+    
     select:hover {
       border-color: #9ca3af;
       background-color: #f9fafb;
     }
-
+    
     select:focus {
       border-color: #2563eb;
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
       outline: none;
     }
-
-    /* Estilos para opciones del select */
+    
     select option {
       padding: 8px 12px;
       background-color: white;
       color: #374151;
     }
-
+    
     select option:hover {
       background-color: #f3f4f6;
     }
-
+    
     select option:checked {
       background-color: #2563eb;
       color: white;
     }
-
-    /* Estilo especial para selects deshabilitados */
+    
     select:disabled {
       background-color: #f3f4f6;
       cursor: not-allowed;
       opacity: 0.6;
     }
-
-    /* Animación suave al abrir */
+    
     select {
       animation: fadeIn 0.3s ease-out;
     }
-
     
-    /* Estilos para impresión */
     @media print {
       header, footer {
         display: none !important;
@@ -388,6 +363,7 @@
         display: none !important;
       }
     }
+    
     .tab-locked {
       opacity: 0.5;
       cursor: not-allowed !important;
@@ -395,7 +371,7 @@
       background: #f3f4f6;
       color: #9ca3af !important;
     }
-  </style>
+    </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
   <!-- ===== Encabezado ===== -->
@@ -417,7 +393,7 @@
   <div class="tabs-container">
     <div class="max-w-7xl xl:max-w-8xl mx-auto px-4 sm:px-6">
       <div class="bg-white rounded-t-xl">
-        <div class="flex flex-wrap border-b">
+        <div class="flex flex-wrap">
           <button onclick="showTab('captura')" id="tab-captura" class="flex-1 min-w-[140px] px-3 sm:px-6 py-4 font-semibold text-gray-600 hover:text-blue-600 transition tab-active text-sm sm:text-base">
             <i class="fas fa-edit mr-1 sm:mr-2"></i><span class="hidden sm:inline">Captura del Problema</span><span class="sm:hidden">Captura</span>
           </button>
@@ -783,77 +759,6 @@
       </div>
     </div>
 
-    <!-- ===== Tab: Pareto ===== -->
-    <div id="content-pareto" class="hidden fade-in">
-      <div class="bg-white rounded-xl shadow-md p-4 sm:p-6">
-        <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-4 sm:mb-6">
-          <i class="fas fa-chart-bar mr-2 text-purple-500"></i>Diagrama de Pareto
-        </h2>
-        <p class="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed">Análisis de tipos de fallas más frecuentes registradas en un periodo de tiempo (ej. último mes). El principio de Pareto indica que el 80% de los problemas provienen del 20% de las causas.</p>
-        
-        <!-- Formulario para agregar categorías de fallas -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div>
-            <h3 class="font-bold text-[#1e3a5f] mb-3 text-sm sm:text-base">Agregar Categoría de Falla</h3>
-            <div class="space-y-3">
-              <div class="flex gap-2">
-                <label for="pareto-causa" class="sr-only">Causa de la falla</label>
-                <input type="text" id="pareto-causa" placeholder="Ej. Obstrucciones/Suciedad" class="std-input">
-                <label for="pareto-frecuencia" class="sr-only">Frecuencia</label>
-                <input type="number" id="pareto-frecuencia" placeholder="Veces" min="0" class="std-input std-input-sm-fixed">
-                <button onclick="addParetoItem()" class="std-button std-button-primary">
-                  <i class="fas fa-plus"></i>
-                  <span>Agregar</span>
-                </button>
-              </div>
-            </div>
-            
-            <!-- Lista de categorías de fallas -->
-            <div class="mt-4">
-              <div class="bg-gray-50 rounded-lg p-3 max-h-48 overflow-y-auto">
-                <div id="pareto-list" class="space-y-2">
-                  <!-- Se agregarán dinámicamente -->
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <h3 class="font-bold text-[#1e3a5f] mb-3 text-sm sm:text-base">Estadísticas</h3>
-            <div class="bg-purple-50 rounded-lg p-4 space-y-2">
-              <div class="flex justify-between">
-                <span class="text-sm font-medium text-gray-700">Total de categorías:</span>
-                <span id="pareto-total-causas" class="text-sm font-bold text-purple-700">0</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-sm font-medium text-gray-700">Total de fallas:</span>
-                <span id="pareto-total-frecuencias" class="text-sm font-bold text-purple-700">0</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-sm font-medium text-gray-700">Categorías críticas (80%):</span>
-                <span id="pareto-criticas" class="text-sm font-bold text-red-600">0</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Diagrama de ancho completo -->
-        <div id="pareto-diagram" class="bg-gray-50 rounded-lg p-4 mb-4 sm:mb-6 border border-gray-200 hidden pareto-diagram-box">
-          <div id="pareto-chart-simple"></div>
-        </div>
-        
-        <!-- Botones de acción -->
-        <div class="flex justify-end gap-3">
-          <button onclick="clearPareto()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition text-sm sm:text-base">
-            <i class="fas fa-eraser mr-2"></i>Limpiar
-          </button>
-          <button onclick="savePareto()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition text-sm sm:text-base">
-            <i class="fas fa-save mr-2"></i>Guardar
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!-- ===== Tab: Plan de Acción ===== -->
     <div id="content-plan" class="hidden fade-in">
       <div class="bg-white rounded-xl shadow-md p-4 sm:p-6">
@@ -928,29 +833,8 @@
       captura: {},
       whys: {},
       ishikawa: {},
-      pareto: [],
       acciones: { correctivas: [], preventivas: [] }
     };
-
-    // Datos del diagrama de Pareto (machine-specific)
-    let paretoData = {};
-
-    // Helper functions for machine-specific Pareto data
-    function getCurrentMachine() {
-      return rcaData.captura?.maquina || '';
-    }
-
-    function getCurrentParetoData() {
-      const machine = getCurrentMachine();
-      return paretoData[machine] || [];
-    }
-
-    function setCurrentParetoData(data) {
-      const machine = getCurrentMachine();
-      if (machine) {
-        paretoData[machine] = data;
-      }
-    }
 
     const ISHIKAWA_CATEGORY_CONFIG = {
       maquina: { label: 'Máquina', icon: 'fas fa-cog' },
@@ -1075,65 +959,6 @@
       if (causeText) causeText.textContent = problema || 'No definido';
     }
 
-    function mergeParetoItems(existingItems = [], newItems = []) {
-      const merged = new Map();
-
-      [...existingItems, ...newItems].forEach(item => {
-        if (!item || !item.causa || !item.frecuencia) return;
-
-        const cleanItem = {
-          causa: item.causa.toString().trim(),
-          frecuencia: Number(item.frecuencia) || 0,
-          source: item.source || 'manual'
-        };
-        if (!cleanItem.causa || cleanItem.frecuencia <= 0) return;
-
-        const key = normalizeText(cleanItem.causa);
-        if (merged.has(key)) {
-          const existingItem = merged.get(key);
-          existingItem.frecuencia = Math.max(existingItem.frecuencia, cleanItem.frecuencia);
-          if (existingItem.source !== 'manual' && cleanItem.source === 'manual') {
-            existingItem.source = 'manual';
-          }
-        } else {
-          merged.set(key, cleanItem);
-        }
-      });
-
-      return Array.from(merged.values()).sort((a, b) => b.frecuencia - a.frecuencia);
-    }
-
-    function normalizeParetoItems(items = []) {
-      return items
-        .map(item => ({
-          causa: (item?.causa || '').toString().trim(),
-          frecuencia: Number(item?.frecuencia) || 0,
-          source: item?.source || 'manual'
-        }))
-        .filter(item => item.causa && item.frecuencia > 0 && item.source !== 'automatico');
-    }
-
-    function syncParetoState() {
-      const currentData = getCurrentParetoData();
-      const normalizedData = normalizeParetoItems(currentData);
-      setCurrentParetoData(normalizedData);
-      rcaData.pareto = [...normalizedData];
-    }
-
-    function refreshParetoUI() {
-      syncParetoState();
-      updateParetoList();
-      updateParetoStats();
-      updateParetoChart();
-
-      const diagram = document.getElementById('pareto-diagram');
-      if (diagram) {
-        const currentData = getCurrentParetoData();
-        const hasVisibleData = currentData.length > 0;
-        diagram.classList.toggle('hidden', !hasVisibleData);
-      }
-    }
-
     function syncPlanFromAnalysis() {
       updateResumen();
     }
@@ -1167,13 +992,11 @@
     function persistCurrentState() {
       reindexAcciones('correctiva');
       reindexAcciones('preventiva');
-      syncParetoState();
       rcaData.acciones = {
         correctivas: getAccionesFromDOM('correctiva'),
         preventivas: getAccionesFromDOM('preventiva')
       };
       localStorage.setItem('rcaData', JSON.stringify(rcaData));
-      localStorage.setItem('paretoData', JSON.stringify(paretoData));
       updateClearAllButton();
     }
 
@@ -1252,10 +1075,6 @@
       const ishikawaMedicion = document.getElementById('ishikawa-medicion')?.value;
       const ishikawaMedioAmbiente = document.getElementById('ishikawa-medioAmbiente')?.value;
 
-      // Verificar si hay datos en Pareto
-      const currentParetoData = getCurrentParetoData();
-      const hasParetoData = currentParetoData && currentParetoData.length > 0;
-
       // Verificar si hay acciones
       const accionesCorrectivas = document.getElementById('accionesCorrectivas')?.children.length || 0;
       const accionesPreventivas = document.getElementById('accionesPreventivas')?.children.length || 0;
@@ -1265,7 +1084,7 @@
         fechaEvento || maquina || tiempoParo || descripcionProblema || sintomas || responsable ||
         why1 || why2 || why3 || why4 || why5 ||
         ishikawaMaquina || ishikawaMetodo || ishikawaMateriales || ishikawaManoObra || ishikawaMedicion || ishikawaMedioAmbiente ||
-        hasParetoData || accionesCorrectivas > 0 || accionesPreventivas > 0
+        accionesCorrectivas > 0 || accionesPreventivas > 0
       );
     }
 
@@ -1345,12 +1164,6 @@
         syncPlanFromAnalysis();
       }
       
-      // Actualizar diagrama de Pareto si es el tab de Pareto
-      if (tabName === 'pareto') {
-        setTimeout(() => {
-          updateParetoChart();
-        }, 100);
-      }
     }
 
     function updateTabLockState() {
@@ -1399,9 +1212,6 @@
       
       // Actualizar resumen de causa raíz
       updateRootCauseSummary();
-      
-      // Sincronizar con Pareto
-      syncWhysToPareto();
       
       syncPlanFromAnalysis();
       persistCurrentState();
@@ -1563,11 +1373,6 @@
           if (check) check.setAttribute('visibility', 'hidden');
         }
       });
-    }
-    
-    // Sincronizar 5 Porqués hacia Pareto
-    function syncWhysToPareto() {
-      refreshParetoUI();
     }
     
     // Agregar acción
@@ -1764,30 +1569,25 @@
       datosCompletosSheet['!cols'] = calcColumnWidths(datosCompletos);
       XLSX.utils.book_append_sheet(workbook, datosCompletosSheet, 'Datos Completos');
 
-      // Hoja adicional: Análisis de Pareto (categorías de fallas)
-      const currentParetoData = getCurrentParetoData();
-      if (currentParetoData && currentParetoData.length > 0) {
-        const sortedPareto = [...currentParetoData].sort((a, b) => b.frecuencia - a.frecuencia);
+      // Hoja adicional: Análisis de Pareto (desde Ishikawa)
+      const paretoItems = getIshikawaParetoData();
+      if (paretoItems.length > 0) {
+        const sortedPareto = [...paretoItems].sort((a, b) => b.frecuencia - a.frecuencia);
         const totalFreq = sortedPareto.reduce((sum, item) => sum + item.frecuencia, 0);
         let acumulado = 0;
 
-        const header = [];
-        const row = [];
+        const paretoSheetData = [['Categoría Ishikawa', 'Causas', '%', '% Acum']];
         sortedPareto.forEach(item => {
           acumulado += item.frecuencia;
           const pct = ((item.frecuencia / totalFreq) * 100).toFixed(1);
           const pctAcum = ((acumulado / totalFreq) * 100).toFixed(1);
-          header.push('Categoría', 'Frecuencia', '%', '% Acum');
-          row.push(item.causa, item.frecuencia, parseFloat(pct), parseFloat(pctAcum));
+          paretoSheetData.push([item.causa, item.frecuencia, parseFloat(pct), parseFloat(pctAcum)]);
         });
-        header.push('Total fallas');
-        row.push(totalFreq);
+        paretoSheetData.push(['Total', totalFreq, 100, 100]);
 
-        const paretoSheetData = [header, row];
         const paretoSheet = XLSX.utils.aoa_to_sheet(paretoSheetData);
         paretoSheet['!cols'] = calcColumnWidths(paretoSheetData, 10, 50);
 
-        // Agregar autofilter
         const paretoRange = XLSX.utils.decode_range(paretoSheet['!ref']);
         paretoSheet['!autofilter'] = { ref: XLSX.utils.encode_range(paretoRange) };
 
@@ -2257,9 +2057,8 @@
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Obtener datos del Pareto
-        const currentParetoData = getCurrentParetoData();
-        const paretoItems = currentParetoData && currentParetoData.length > 0 ? [...currentParetoData] : [];
+        // Obtener datos del Pareto desde Ishikawa
+        const paretoItems = getIshikawaParetoData();
 
         if (paretoItems.length === 0) {
           ctx.font = '12px Arial';
@@ -2554,79 +2353,47 @@
         checkPageBreak(200);
         const ishikawaImage = createSimplifiedIshikawa();
         if (ishikawaImage && ishikawaImage.imgData) {
-          const imgWidth = 175;
+          const imgWidth = 180;
           const imgHeight = (ishikawaImage.height / ishikawaImage.width) * imgWidth;
-          doc.addImage(ishikawaImage.imgData, 'PNG', margin, yPosition, imgWidth, imgHeight);
-          yPosition += imgHeight + 12;
+          const imgX = (pageWidth - imgWidth) / 2;
+          doc.addImage(ishikawaImage.imgData, 'PNG', imgX, yPosition, imgWidth, imgHeight);
+          yPosition += imgHeight + 8;
         }
-      }
-
-      const categorias = CATEGORY_ORDER.map(key => ({
-        id: key,
-        nombre: ISHIKAWA_CATEGORY_CONFIG[key].label
-      }));
-      
-      let hasIshikawaText = false;
-      categorias.forEach(categoria => {
-        const valor = document.getElementById(`ishikawa-${categoria.id}`).value;
-        if (valor) {
-          hasIshikawaText = true;
-          addText(`${categoria.nombre}:`, 12, 'bold');
-          addText(valor);
-        }
-      });
-      
-      if (!hasIshikawaText) {
+      } else {
         addText('No se registraron datos en el diagrama de Ishikawa.');
       }
       
-      yPosition += 15;
+      yPosition += 8;
 
-      // 4. ANÁLISIS DE PARETO
-      addSectionTitle('4. ANÁLISIS DE PARETO');
+      // 4. DIAGRAMA DE PARETO
+      addSectionTitle('4. DIAGRAMA DE PARETO');
 
-      // Obtener datos del Pareto (solo categorías de fallas)
-      const currentParetoData = getCurrentParetoData();
-      const paretoItems = currentParetoData && currentParetoData.length > 0 ? [...currentParetoData] : [];
+      const paretoItems = getIshikawaParetoData();
 
       if (paretoItems.length > 0) {
-        // Usar el diagrama simplificado (fallback) en lugar de html2canvas
-        checkPageBreak(200);
         const paretoImage = createSimplifiedPareto();
         if (paretoImage && paretoImage.imgData) {
-          const imgWidth = 150;
+          const imgWidth = 175;
           const imgHeight = (paretoImage.height / paretoImage.width) * imgWidth;
-          doc.addImage(paretoImage.imgData, 'PNG', margin, yPosition, imgWidth, imgHeight);
-          yPosition += imgHeight + 10;
+          const imgX = (pageWidth - imgWidth) / 2;
+          doc.addImage(paretoImage.imgData, 'PNG', imgX, yPosition, imgWidth, imgHeight);
+          yPosition += imgHeight + 6;
         }
 
-        // Estadísticas
-        const totalCausas = document.getElementById('pareto-total-causas').textContent;
-        const totalFrecuencias = document.getElementById('pareto-total-frecuencias').textContent;
-        const criticas = document.getElementById('pareto-criticas').textContent;
+        const totalCausas = paretoItems.reduce((sum, item) => sum + item.frecuencia, 0);
+        const sortedPareto = [...paretoItems].sort((a, b) => b.frecuencia - a.frecuencia);
 
-        addText(`Total de categorías: ${totalCausas}`);
-        addText(`Total de fallas: ${totalFrecuencias}`);
-        addText(`Categorías críticas (80%): ${criticas}`);
-
-        // Tabla de datos
-        yPosition += 5;
         addText('Detalle de categorías:', 11, 'bold', colors.navy);
 
-        // Ordenar por frecuencia descendente
-        const sortedPareto = [...paretoItems].sort((a, b) => b.frecuencia - a.frecuencia);
-        const totalFreq = sortedPareto.reduce((sum, item) => sum + item.frecuencia, 0);
         let acumulado = 0;
-
         sortedPareto.forEach((item, index) => {
           acumulado += item.frecuencia;
-          const porcentaje = ((item.frecuencia / totalFreq) * 100).toFixed(1);
-          const porcentajeAcumulado = ((acumulado / totalFreq) * 100).toFixed(1);
-
+          const porcentaje = ((item.frecuencia / totalCausas) * 100).toFixed(1);
+          const porcentajeAcumulado = ((acumulado / totalCausas) * 100).toFixed(1);
           addText(`${index + 1}. ${item.causa}: ${item.frecuencia} (${porcentaje}%, Acum: ${porcentajeAcumulado}%)`, 10, 'normal', colors.gray);
         });
       } else {
-        addText('No se registraron categorías de fallas en el análisis de Pareto.');
+        addText('No hay datos de Ishikawa para generar el análisis de Pareto.');
       }
 
       yPosition += 15;
@@ -2712,383 +2479,14 @@
       }
     }
 
-    // Diagrama de Pareto simple y limpio
-    function updateParetoChart() {
-      const chart = document.getElementById('pareto-chart-simple');
-      if (!chart) return;
-      chart.innerHTML = '';
-      
-      // Obtener datos de categorías de fallas del tab de Pareto
-      const failureCategories = getCurrentParetoData() || [];
-      
-      // Crear datos para el diagrama
-      const data = failureCategories.map(item => ({
-        label: item.causa,
-        value: item.frecuencia,
-        text: item.causa
-      }));
-      
-      if (data.length === 0) {
-        chart.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #6b7280;">Agrega categorías de fallas con sus frecuencias para ver el diagrama</div>';
-        return;
-      }
-      
-      // Ordenar datos por valor descendente (para el cálculo del acumulado)
-      const sortedData = [...data].sort((a, b) => b.value - a.value);
-      const totalValue = sortedData.reduce((sum, item) => sum + item.value, 0);
-      
-      // Calcular porcentajes acumulados
-      let acumulado = 0;
-      sortedData.forEach(item => {
-        acumulado += item.value;
-        item.percentage = (item.value / totalValue) * 100;
-        item.cumulativePercentage = (acumulado / totalValue) * 100;
-      });
-      
-      // Obtener dimensiones reales del contenedor
-      let containerRect = chart.getBoundingClientRect();
-      let width = containerRect.width;
-      let height = containerRect.height;
-      
-      // Si las dimensiones son 0 (elemento no visible), usar valores por defecto
-      if (width === 0 || height === 0) {
-        width = chart.parentElement.offsetWidth || 800;
-        height = 450;
-      }
-      
-      // Crear SVG responsivo
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('width', '100%');
-      svg.setAttribute('height', '100%');
-      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-      
-      // Márgenes
-      const margin = { top: 40, right: 60, bottom: 80, left: 60 };
-      const chartWidth = width - margin.left - margin.right;
-      const chartHeight = height - margin.top - margin.bottom;
-      
-      // Escalas
-      const maxValue = Math.max(...sortedData.map(d => d.value));
-      const barWidth = Math.min(chartWidth / sortedData.length * 0.7, 60);
-      const barSpacing = chartWidth / sortedData.length;
-      
-      const startX = margin.left;
-      const startY = height - margin.bottom;
-      
-      // Dibujar cuadrícula
-      for (let i = 0; i <= 5; i++) {
-        const y = startY - (i * chartHeight / 5);
-        const gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        gridLine.setAttribute('x1', startX);
-        gridLine.setAttribute('y1', y);
-        gridLine.setAttribute('x2', width - margin.right);
-        gridLine.setAttribute('y2', y);
-        gridLine.setAttribute('stroke', '#e5e7eb');
-        gridLine.setAttribute('stroke-width', '1');
-        gridLine.setAttribute('stroke-dasharray', '2,2');
-        svg.appendChild(gridLine);
-        
-        // Etiqueta del eje Y izquierdo (frecuencia)
-        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        yLabel.setAttribute('x', startX - 10);
-        yLabel.setAttribute('y', y + 5);
-        yLabel.setAttribute('text-anchor', 'end');
-        yLabel.setAttribute('fill', '#6b7280');
-        yLabel.setAttribute('font-size', '11');
-        yLabel.setAttribute('font-weight', '600');
-        yLabel.textContent = Math.round(maxValue * i / 5);
-        svg.appendChild(yLabel);
-      }
-      
-      // Dibujar ejes
-      const axisY = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      axisY.setAttribute('x1', startX);
-      axisY.setAttribute('y1', startY);
-      axisY.setAttribute('x2', startX);
-      axisY.setAttribute('y2', margin.top);
-      axisY.setAttribute('stroke', '#374151');
-      axisY.setAttribute('stroke-width', '2');
-      svg.appendChild(axisY);
-      
-      const axisX = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      axisX.setAttribute('x1', startX);
-      axisX.setAttribute('y1', startY);
-      axisX.setAttribute('x2', width - margin.right);
-      axisX.setAttribute('y2', startY);
-      axisX.setAttribute('stroke', '#374151');
-      axisX.setAttribute('stroke-width', '2');
-      svg.appendChild(axisX);
-      
-            
-      // Dibujar barras y línea de porcentaje acumulado
-      const linePoints = [];
-      
-      sortedData.forEach((item, index) => {
-        const barHeight = (item.value / maxValue) * chartHeight;
-        const x = startX + (index * barSpacing) + (barSpacing - barWidth) / 2;
-        const y = startY - barHeight;
-        
-        // Barra
-        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        rect.setAttribute('x', x);
-        rect.setAttribute('y', y);
-        rect.setAttribute('width', barWidth);
-        rect.setAttribute('height', barHeight);
-        rect.setAttribute('fill', '#93c5fd');
-        rect.setAttribute('rx', '2');
-        rect.setAttribute('stroke', '#3b82f6');
-        rect.setAttribute('stroke-width', '1');
-        rect.style.cursor = 'pointer';
-        rect.style.transition = 'all 0.3s ease';
-
-        // Hover effect
-        rect.addEventListener('mouseenter', function() {
-          this.setAttribute('fill', '#60a5fa');
-        });
-        rect.addEventListener('mouseleave', function() {
-          this.setAttribute('fill', '#93c5fd');
-        });
-        
-        svg.appendChild(rect);
-        
-        // Valor sobre la barra
-        const valueText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        valueText.setAttribute('x', x + barWidth / 2);
-        valueText.setAttribute('y', y - 5);
-        valueText.setAttribute('text-anchor', 'middle');
-        valueText.setAttribute('fill', '#1f2937');
-        valueText.setAttribute('font-size', '12');
-        valueText.setAttribute('font-weight', 'bold');
-        valueText.textContent = item.value;
-        svg.appendChild(valueText);
-        
-        // Etiqueta en el eje X
-        const labelText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        labelText.setAttribute('x', x + barWidth / 2);
-        labelText.setAttribute('y', startY + 20);
-        labelText.setAttribute('text-anchor', 'middle');
-        labelText.setAttribute('fill', '#374151');
-        labelText.setAttribute('font-size', '9');
-        labelText.setAttribute('font-weight', '600');
-        
-        // Mostrar texto completo sin truncamiento
-        labelText.textContent = item.label;
-        svg.appendChild(labelText);
-        
-        // Puntos para la línea de porcentaje acumulado
-        const lineX = x + barWidth / 2;
-        const lineY = startY - (item.cumulativePercentage / 100) * chartHeight;
-        linePoints.push(`${lineX},${lineY}`);
-      });
-      
-      // Dibujar línea de porcentaje acumulado
-      if (linePoints.length > 0) {
-        const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-        polyline.setAttribute('points', linePoints.join(' '));
-        polyline.setAttribute('fill', 'none');
-        polyline.setAttribute('stroke', '#dc2626');
-        polyline.setAttribute('stroke-width', '2.5');
-        polyline.setAttribute('stroke-linejoin', 'round');
-        polyline.setAttribute('stroke-linecap', 'round');
-        svg.appendChild(polyline);
-        
-        // Dibujar puntos en la línea
-        linePoints.forEach((point, index) => {
-          const [x, y] = point.split(',').map(Number);
-          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          circle.setAttribute('cx', x);
-          circle.setAttribute('cy', y);
-          circle.setAttribute('r', '4');
-          circle.setAttribute('fill', '#dc2626');
-          circle.setAttribute('stroke', '#ffffff');
-          circle.setAttribute('stroke-width', '2');
-          svg.appendChild(circle);
-          
-          // Etiqueta de porcentaje en puntos clave
-          if (index === 0 || index === linePoints.length - 1 || sortedData[index].cumulativePercentage >= 80) {
-            const pctText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            pctText.setAttribute('x', x);
-            pctText.setAttribute('y', y - 10);
-            pctText.setAttribute('text-anchor', 'middle');
-            pctText.setAttribute('fill', '#dc2626');
-            pctText.setAttribute('font-size', '10');
-            pctText.setAttribute('font-weight', 'bold');
-            pctText.textContent = `${Math.round(sortedData[index].cumulativePercentage)}%`;
-            svg.appendChild(pctText);
-          }
-        });
-      }
-      
-      // Línea de referencia del 80%
-      const eightyPercentY = startY - (0.8 * chartHeight);
-      const eightyPercentLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      eightyPercentLine.setAttribute('x1', startX);
-      eightyPercentLine.setAttribute('y1', eightyPercentY);
-      eightyPercentLine.setAttribute('x2', width - margin.right);
-      eightyPercentLine.setAttribute('y2', eightyPercentY);
-      eightyPercentLine.setAttribute('stroke', '#dc2626');
-      eightyPercentLine.setAttribute('stroke-width', '1');
-      eightyPercentLine.setAttribute('stroke-dasharray', '5,5');
-      eightyPercentLine.setAttribute('opacity', '0.5');
-      svg.appendChild(eightyPercentLine);
-      
-      // Etiqueta de la línea del 80%
-      const eightyLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      eightyLabel.setAttribute('x', width - margin.right + 5);
-      eightyLabel.setAttribute('y', eightyPercentY - 5);
-      eightyLabel.setAttribute('text-anchor', 'start');
-      eightyLabel.setAttribute('fill', '#dc2626');
-      eightyLabel.setAttribute('font-size', '10');
-      eightyLabel.setAttribute('font-weight', 'bold');
-      eightyLabel.textContent = '80%';
-      svg.appendChild(eightyLabel);
-      
-      // Leyenda
-      const legendY = height - margin.bottom + 35; // Mover leyenda abajo del todo
-      
-      // Leyenda barras
-      const legendBar = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      legendBar.setAttribute('x', startX);
-      legendBar.setAttribute('y', legendY);
-      legendBar.setAttribute('width', 15);
-      legendBar.setAttribute('height', 10);
-      legendBar.setAttribute('fill', '#93c5fd');
-      legendBar.setAttribute('rx', '2');
-      svg.appendChild(legendBar);
-      
-      const legendBarText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      legendBarText.setAttribute('x', startX + 20);
-      legendBarText.setAttribute('y', legendY + 8);
-      legendBarText.setAttribute('fill', '#374151');
-      legendBarText.setAttribute('font-size', '11');
-      legendBarText.setAttribute('font-weight', '600');
-      legendBarText.textContent = 'Frecuencia';
-      svg.appendChild(legendBarText);
-      
-      // Leyenda línea
-      const legendLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      legendLine.setAttribute('x1', startX + 100);
-      legendLine.setAttribute('y1', legendY + 5);
-      legendLine.setAttribute('x2', startX + 120);
-      legendLine.setAttribute('y2', legendY + 5);
-      legendLine.setAttribute('stroke', '#dc2626');
-      legendLine.setAttribute('stroke-width', '2.5');
-      svg.appendChild(legendLine);
-      
-      const legendLineText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      legendLineText.setAttribute('x', startX + 125);
-      legendLineText.setAttribute('y', legendY + 8);
-      legendLineText.setAttribute('fill', '#374151');
-      legendLineText.setAttribute('font-size', '11');
-      legendLineText.setAttribute('font-weight', '600');
-      legendLineText.textContent = '% Acumulado';
-      svg.appendChild(legendLineText);
-      
-      chart.appendChild(svg);
-    }
-    
-    // Agregar categoría de falla al diagrama
-    function addParetoItem() {
-      const causa = document.getElementById('pareto-causa').value.trim();
-      const frecuencia = parseInt(document.getElementById('pareto-frecuencia').value, 10) || 0;
-      
-      if (!causa || frecuencia <= 0) {
-        alert('Ingresa una causa y frecuencia mayor a 0.');
-        return;
-      }
-
-      const currentData = getCurrentParetoData();
-      const mergedData = mergeParetoItems(currentData, [{ causa, frecuencia }]);
-      setCurrentParetoData(mergedData);
-      
-      document.getElementById('pareto-causa').value = '';
-      document.getElementById('pareto-frecuencia').value = '';
-
-      refreshParetoUI();
-      syncPlanFromAnalysis();
-      persistCurrentState();
-    }
-    
-    // Actualizar lista de categorías de fallas de Pareto
-    function updateParetoList() {
-      const list = document.getElementById('pareto-list');
-      if (!list) return;
-
-      list.innerHTML = '';
-
-      const currentData = getCurrentParetoData();
-      currentData.forEach((item, index) => {
-        const itemDiv = createParetoListItem('', item.causa, item.frecuencia, true, index);
-        list.appendChild(itemDiv);
-      });
-
-      if (currentData.length === 0) {
-        list.innerHTML = '<p class="text-gray-500 text-sm italic">No hay categorías de fallas agregadas</p>';
-      }
-    }
-    
-    // Crear elemento de lista de Pareto
-    function createParetoListItem(label, text, value, deletable, index) {
-      const itemDiv = document.createElement('div');
-      const bgColor = deletable ? 'bg-white' : 'bg-blue-50';
-      const borderColor = deletable ? 'border-gray-200' : 'border-blue-200';
-      
-      itemDiv.className = `flex items-center justify-between p-2 ${bgColor} rounded border ${borderColor}`;
-      itemDiv.innerHTML = `
-        <div class="flex-1">
-          ${label ? `<span class="text-xs font-semibold text-gray-500">${label}</span>` : ''}
-          <span class="text-sm font-medium ml-2">${text}</span>
-          <span class="ml-2 text-purple-600 font-semibold text-sm">(${value})</span>
-        </div>
-        ${deletable ? `<button onclick="removeParetoItem(${index})" class="text-red-500 hover:text-red-700 ml-2"><i class="fas fa-times"></i></button>` : ''}
-      `;
-      return itemDiv;
-    }
-    
-    // Eliminar causa adicional de Pareto
-    function removeParetoItem(index) {
-      const currentData = getCurrentParetoData();
-      if (index >= 0 && index < currentData.length) {
-        currentData.splice(index, 1);
-        setCurrentParetoData(currentData);
-        refreshParetoUI();
-        syncPlanFromAnalysis();
-        persistCurrentState();
-      }
-    }
-    
-    // Actualizar estadísticas
-    function updateParetoStats() {
-      const currentData = getCurrentParetoData();
-      const allData = currentData.filter(item => item.frecuencia > 0);
-
-      const totalCausas = allData.length;
-      const totalFrecuencias = allData.reduce((sum, item) => sum + item.frecuencia, 0);
-
-      let causasCriticas = 0;
-      let acumulado = 0;
-      [...allData]
-        .sort((a, b) => b.frecuencia - a.frecuencia)
-        .forEach(item => {
-          acumulado += item.frecuencia;
-          if (totalFrecuencias > 0 && acumulado <= totalFrecuencias * 0.8) {
-            causasCriticas++;
-          }
-        });
-      
-      document.getElementById('pareto-total-causas').textContent = totalCausas;
-      document.getElementById('pareto-total-frecuencias').textContent = totalFrecuencias;
-      document.getElementById('pareto-criticas').textContent = causasCriticas;
-    }
-    
-    // Limpiar diagrama
-    function clearPareto() {
-      if (confirm('¿Estás seguro de que quieres limpiar todos los datos del diagrama de Pareto?')) {
-        setCurrentParetoData([]);
-        refreshParetoUI();
-        syncPlanFromAnalysis();
-        persistCurrentState();
-      }
+    // Build Pareto data from Ishikawa categories for export
+    function getIshikawaParetoData() {
+      return CATEGORY_ORDER.map(key => {
+        const value = (document.getElementById(`ishikawa-${key}`)?.value || '').trim();
+        if (!value) return null;
+        const causes = value.split(/[,.\n]+/).map(s => s.trim()).filter(s => s.length > 0);
+        return { causa: ISHIKAWA_CATEGORY_CONFIG[key].label, frecuencia: causes.length };
+      }).filter(Boolean);
     }
 
     // Limpiar todo el análisis
@@ -3130,16 +2528,6 @@ Esta acción no se puede deshacer.`;
           medioAmbiente: false
         });
 
-        // Limpiar Pareto
-        setCurrentParetoData([]);
-        refreshParetoUI();
-        
-        // Ocultar el diagrama visual de Pareto
-        const paretoDiagram = document.getElementById('pareto-diagram');
-        if (paretoDiagram) {
-          paretoDiagram.classList.add('hidden');
-        }
-
         // Limpiar acciones
         document.getElementById('accionesCorrectivas').innerHTML = '';
         document.getElementById('accionesPreventivas').innerHTML = '';
@@ -3153,7 +2541,6 @@ Esta acción no se puede deshacer.`;
           captura: {},
           whys: {},
           ishikawa: {},
-          pareto: [],
           acciones: { correctivas: [], preventivas: [] }
         };
 
@@ -3171,15 +2558,6 @@ Esta acción no se puede deshacer.`;
 
 
       }
-    }
-    
-    // Guardar datos de Pareto
-    function savePareto() {
-      syncParetoState();
-      refreshParetoUI();
-      syncPlanFromAnalysis();
-      persistCurrentState();
-
     }
     
     // Inicializar datepicker
@@ -3281,14 +2659,7 @@ Esta acción no se puede deshacer.`;
         rcaData.captura = rcaData.captura || {};
         rcaData.whys = rcaData.whys || {};
         rcaData.ishikawa = rcaData.ishikawa || {};
-        rcaData.pareto = rcaData.pareto || [];
         rcaData.acciones = rcaData.acciones || { correctivas: [], preventivas: [] };
-        
-        // Restaurar datos de Pareto machine-specific
-        const savedParetoData = localStorage.getItem('paretoData');
-        if (savedParetoData) {
-          paretoData = JSON.parse(savedParetoData);
-        }
         
         // Restaurar captura
         if (rcaData.captura.fecha) document.getElementById('fechaEvento').value = rcaData.captura.fecha;
@@ -3313,11 +2684,6 @@ Esta acción no se puede deshacer.`;
         });
         refreshIshikawaDiagram();
         
-        // Restaurar datos de Pareto para la máquina actual
-        if (rcaData.pareto && rcaData.pareto.length > 0) {
-          setCurrentParetoData(normalizeParetoItems(rcaData.pareto));
-        }
-        
         // Restaurar acciones
         if (rcaData.acciones.correctivas) {
           rcaData.acciones.correctivas.forEach((accion, index) => {
@@ -3337,9 +2703,7 @@ Esta acción no se puede deshacer.`;
       // Actualizar resumen
       updateRootCauseSummary();
       
-      // Inicializar diagrama de Pareto simple
       setTimeout(() => {
-        refreshParetoUI();
         syncPlanFromAnalysis();
       }, 500);
 
