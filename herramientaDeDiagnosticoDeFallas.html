@@ -481,7 +481,7 @@
         <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-4 sm:mb-6">
           <i class="fas fa-question-circle mr-2 text-blue-500"></i>Los 5 Porqués
         </h2>
-        <p class="text-gray-500 mb-4 sm:mb-6 text-sm"><strong>¿Qué es?</strong> La técnica de los 5 Porqués consiste en preguntar "¿por qué?" repetidamente para profundizar en las causas de un problema hasta encontrar su origen.</p>
+        <p class="text-gray-500 mb-4 sm:mb-6 text-sm">La técnica de los 5 Porqués consiste en preguntar "¿por qué?" repetidamente para profundizar en las causas de un problema hasta encontrar su origen.</p>
         <p class="text-gray-500 mb-4 sm:mb-6 text-sm"><strong>Cómo usarlo:</strong> Responde cada "¿Por qué?" basándote en hechos. La respuesta de cada nivel se convierte en la pregunta del siguiente. Al llegar al quinto nivel, habrás identificado la causa raíz.</p>
 
         <div class="space-y-2" id="whysContainer">
@@ -570,7 +570,7 @@
         <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-4 sm:mb-6">
           <i class="fas fa-project-diagram mr-2 text-green-500"></i>Diagrama de Ishikawa
         </h2>
-        <p class="text-gray-500 mb-4 sm:mb-6 text-sm"><strong>¿Qué es?</strong> El Diagrama de Ishikawa (espina de pescado) organiza visualmente las causas potenciales de un problema en 6 categorías: Máquina, Método, Materiales, Mano de obra, Medición y Medio ambiente.</p>
+        <p class="text-gray-500 mb-4 sm:mb-6 text-sm">El Diagrama de Ishikawa organiza visualmente las causas potenciales de un problema en 6 categorías: Máquina, Método, Materiales, Mano de obra, Medición y Medio ambiente.</p>
         <p class="text-gray-500 mb-4 sm:mb-6 text-sm"><strong>Cómo usarlo:</strong> Escribe en cada categoría las causas que identificaste. Al guardar, el diagrama se genera automáticamente. Haz clic en cualquier recuadro del diagrama para editar esa categoría.</p>
         
         <!-- Diagrama visual -->
@@ -762,7 +762,7 @@
         <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-4 sm:mb-6">
           <i class="fas fa-tasks mr-2 text-red-500"></i>Plan de Acción
         </h2>
-        <p class="text-gray-500 mb-4 sm:mb-6 text-sm"><strong>¿Qué es?</strong> El Plan de Acción registra las acciones correctivas (para solucionar la causa raíz) y preventivas (para evitar que vuelva a ocurrir), asignando responsables y fechas límite.</p>
+        <p class="text-gray-500 mb-4 sm:mb-6 text-sm">El Plan de Acción registra las acciones correctivas (para solucionar la causa raíz) y preventivas (para evitar que vuelva a ocurrir), asignando responsables y fechas límite.</p>
         <p class="text-gray-500 mb-4 sm:mb-6 text-sm"><strong>Cómo usarlo:</strong> Agrega las acciones necesarias, especifica quién es responsable y la fecha de finalización esperada. Marca la prioridad de cada acción para enfocar los esfuerzos.</p>
         
         <!-- Resumen del análisis -->
@@ -804,14 +804,14 @@
   </main>
 
   <!-- ===== Footer ===== -->
-  <footer class="bg-gray-800 text-gray-400 py-4 sm:py-5 mt-8">
+  <footer class="text-gray-400 py-4 sm:py-5 mt-8">
     <div class="max-w-8xl xl:max-w-9xl mx-auto px-4 sm:px-6 text-center">
       <p class="text-xs sm:text-sm">Herramienta de Análisis Causa Raíz · Generado para gestión de mantenimiento y confiabilidad</p>
     </div>
   </footer>
 
   <!-- ===== FAB ===== -->
-  <div id="fab" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+  <div id="fab" class="hidden fixed bottom-6 right-6 z-50 flex flex-col items-end">
     <div id="fab-menu" class="hidden mb-3 flex flex-col gap-2">
       <button onclick="handlePDFExport()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2.5 rounded-lg shadow-lg transition text-sm flex items-center gap-2 whitespace-nowrap">
         <i class="fas fa-file-pdf"></i> Exportar PDF
@@ -823,7 +823,7 @@
         <i class="fas fa-trash-alt"></i> Limpiar Todo
       </button>
     </div>
-    <button id="fab-toggle" onclick="toggleFab(event)" class="w-14 h-14 bg-[#1e3a5f] hover:bg-[#2563eb] text-white rounded-full shadow-xl flex items-center justify-center text-2xl transition-all duration-300">
+    <button id="fab-toggle" onclick="toggleFab(event)" class="w-14 h-14 bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-full shadow-xl flex items-center justify-center text-2xl transition-all duration-300" aria-label="Menú de acciones">
       <i class="fas fa-plus"></i>
     </button>
   </div>
@@ -1115,14 +1115,19 @@
     }
 
     // Actualizar visibilidad del botón Limpiar Todo
+    function hasCapturaData() {
+      return !!(rcaData.captura && rcaData.captura.problema);
+    }
+
     function updateClearAllButton() {
+      const hasDataVal = hasData();
       const clearAllBtn = document.getElementById('clearAllBtn');
       if (clearAllBtn) {
-        if (hasData()) {
-          clearAllBtn.classList.remove('hidden');
-        } else {
-          clearAllBtn.classList.add('hidden');
-        }
+        clearAllBtn.classList.toggle('hidden', !hasDataVal);
+      }
+      const fab = document.getElementById('fab');
+      if (fab) {
+        fab.classList.toggle('hidden', !hasCapturaData());
       }
     }
 
@@ -1472,45 +1477,61 @@
         headerRow.alignment = { vertical: 'middle', horizontal: 'center' };
         headerRow.height = 20;
 
-        if (todasAcciones.length > 0) {
-          const correctivas = todasAcciones.filter(a => a.tipo === 'Correctivo');
-          const preventivas = todasAcciones.filter(a => a.tipo === 'Preventivo');
-          const tipoAccion = correctivas.length > 0 && preventivas.length > 0
-            ? 'Correctivo / Preventivo'
-            : correctivas.length > 0 ? 'Correctivo' : 'Preventivo';
-          const correctivoText = correctivas.map(a => a.descripcion).filter(Boolean).join('\n');
-          const preventivoText = preventivas.map(a => a.descripcion).filter(Boolean).join('\n');
-          const responsables = [...new Set(todasAcciones.map(a => a.responsable).filter(Boolean))].join(', ');
-          const fechasFin = todasAcciones.map(a => a.fecha).filter(Boolean).join(', ');
+        // Calcular entry actual
+        const correctivas = todasAcciones.filter(a => a.tipo === 'Correctivo');
+        const preventivas = todasAcciones.filter(a => a.tipo === 'Preventivo');
+        const tipoAccion = correctivas.length > 0 && preventivas.length > 0
+          ? 'Correctivo / Preventivo'
+          : correctivas.length > 0 ? 'Correctivo' : 'Preventivo';
+        const correctivoText = correctivas.map(a => a.descripcion).filter(Boolean).join('\n');
+        const preventivoText = preventivas.map(a => a.descripcion).filter(Boolean).join('\n');
+        const responsables = [...new Set(todasAcciones.map(a => a.responsable).filter(Boolean))].join(', ');
+        const fechasFin = todasAcciones.map(a => a.fecha).filter(Boolean).join(', ');
 
-          reporteSheet.addRow([
-            rcaData.captura.fecha || '',
-            rcaData.captura.maquina || '',
-            rcaData.captura.problema || '',
-            tipoAccion,
-            correctivoText,
-            preventivoText,
-            'Pendiente',
-            responsables || rcaData.captura.responsable || '',
-            fechasFin,
-            causaRaiz
+        const currentEntry = {
+          fecha: rcaData.captura.fecha || '',
+          maquina: rcaData.captura.maquina || '',
+          problema: rcaData.captura.problema || '',
+          tipoAccion: tipoAccion,
+          correctivoText: todasAcciones.length > 0 ? correctivoText : '',
+          preventivoText: todasAcciones.length > 0 ? preventivoText : '',
+          status: 'Pendiente',
+          responsable: (todasAcciones.length > 0 ? responsables : '') || rcaData.captura.responsable || '',
+          fechaFin: todasAcciones.length > 0 ? fechasFin : '',
+          causaRaiz: causaRaiz,
+          ishikawa: CATEGORY_ORDER.reduce((acc, key) => {
+            acc[key] = (document.getElementById(`ishikawa-${key}`)?.value || '').trim();
+            return acc;
+          }, {})
+        };
+
+        // Cargar historial, agregar entry actual, guardar
+        const exportHistory = JSON.parse(localStorage.getItem('exportHistory') || '[]');
+        exportHistory.push(currentEntry);
+        localStorage.setItem('exportHistory', JSON.stringify(exportHistory));
+
+        // Agregar una fila por cada entry del historial
+        exportHistory.forEach((entry, i) => {
+          const row = reporteSheet.addRow([
+            entry.fecha,
+            entry.maquina,
+            entry.problema,
+            entry.tipoAccion,
+            entry.correctivoText,
+            entry.preventivoText,
+            entry.status || 'Pendiente',
+            entry.responsable,
+            entry.fechaFin,
+            entry.causaRaiz
           ]);
-        } else {
-          reporteSheet.addRow([
-            rcaData.captura.fecha || '',
-            rcaData.captura.maquina || '',
-            rcaData.captura.problema || '',
-            '', '', '', 'Pendiente',
-            rcaData.captura.responsable || '',
-            '', causaRaiz
-          ]);
-        }
+          if (i > 0) row.alignment = { vertical: 'top', wrapText: true };
+        });
+        reporteSheet.getRow(2).alignment = { vertical: 'top', wrapText: true };
 
-        const dataRow = reporteSheet.getRow(2);
-        dataRow.alignment = { vertical: 'top', wrapText: true };
-        reporteSheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: 2, column: 10 } };
+        const lastRow = exportHistory.length + 1;
+        reporteSheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: lastRow, column: 10 } };
 
-        // Auto-fit column widths based on content
+        // Auto-fit column widths based on all data
         reporteSheet.columns.forEach((col, i) => {
           let maxLen = 0;
           reporteSheet.getColumn(i + 1).eachCell(cell => {
@@ -1525,70 +1546,129 @@
 
         const maquina = rcaData.captura.maquina || 'No especificada';
 
-        // Hoja: Ishikawa
-        const ishikawaSheet = workbook.addWorksheet('Ishikawa');
-        ishikawaSheet.getCell('A1').value = 'Máquina';
-        ishikawaSheet.getCell('A2').value = maquina;
-        ishikawaSheet.getRow(1).font = { bold: true };
-        const ishikawaImageData = createSimplifiedIshikawa();
-        if (ishikawaImageData && ishikawaImageData.imgData) {
-          const imgId = workbook.addImage({ base64: ishikawaImageData.imgData });
-          ishikawaSheet.addImage(imgId, {
-            tl: { col: 0, row: 3 },
-            br: { col: 15, row: 33 }
-          });
-          ishikawaSheet.getColumn(1).width = 60;
-        }
-
-        // Hoja: Pareto
-        const paretoItems = getIshikawaParetoData();
-        if (paretoItems.length > 0) {
-          const paretoSheet = workbook.addWorksheet('Pareto');
-          paretoSheet.getCell('A1').value = 'Máquina';
-          paretoSheet.getCell('A2').value = maquina;
-          paretoSheet.getRow(1).font = { bold: true };
-          const paretoImageData = createSimplifiedPareto();
-          if (paretoImageData && paretoImageData.imgData) {
-            const imgId = workbook.addImage({ base64: paretoImageData.imgData });
-            paretoSheet.addImage(imgId, {
-              tl: { col: 0, row: 3 },
-              br: { col: 15, row: 28 }
-            });
-            paretoSheet.getColumn(1).width = 60;
+        // Agrupar historial por máquina, última entry por máquina
+        const machineGroups = {};
+        exportHistory.forEach(entry => {
+          if (entry.maquina) {
+            machineGroups[entry.maquina] = entry;
           }
-        }
+        });
+        const machines = Object.keys(machineGroups);
+
+        // ---- Hoja: Ishikawa ----
+        const ishikawaSheet = workbook.addWorksheet('Ishikawa');
+        ishikawaSheet.getCell('A1').value = 'Fecha';
+        ishikawaSheet.getCell('B1').value = 'Máquina';
+        const ishikawaHeader = ishikawaSheet.getRow(1);
+        ishikawaHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E79' } };
+        ishikawaHeader.font = { bold: true, size: 11, name: 'Calibri', color: { argb: 'FFFFFFFF' } };
+        ishikawaHeader.alignment = { vertical: 'middle', horizontal: 'center' };
+        ishikawaHeader.height = 20;
+
+        const ishikawaMachines = exportHistory
+          .filter(e => e.ishikawa && Object.values(e.ishikawa).some(v => v))
+          .map(e => e.maquina)
+          .filter(Boolean);
+        const firstMachine = [...new Set(ishikawaMachines)].sort()[0];
+
+        let ishikawaRow = 2;
+        exportHistory.forEach(entry => {
+          const ishikawaData = entry.ishikawa || {};
+          if (!Object.values(ishikawaData).some(v => v)) return;
+          ishikawaSheet.getCell(`A${ishikawaRow}`).value = entry.fecha;
+          ishikawaSheet.getCell(`B${ishikawaRow}`).value = entry.maquina;
+          ishikawaSheet.getCell(`A${ishikawaRow}`).font = { size: 11, name: 'Calibri' };
+          ishikawaSheet.getCell(`B${ishikawaRow}`).font = { size: 11, name: 'Calibri' };
+          ishikawaRow++;
+          const imgData = createSimplifiedIshikawa(ishikawaData, entry.problema);
+          if (imgData && imgData.imgData) {
+            const base64Data = imgData.imgData.split(',')[1];
+            const imgId = workbook.addImage({ base64: base64Data, extension: 'png' });
+            ishikawaSheet.addImage(imgId, {
+              tl: { col: 0, row: ishikawaRow },
+              br: { col: 15, row: ishikawaRow + 30 }
+            });
+            ishikawaRow += 31;
+          }
+        });
+        ishikawaSheet.getColumn(1).width = 16;
+        ishikawaSheet.getColumn(2).width = 30;
+        ishikawaSheet.autoFilter = {
+          from: { row: 1, column: 1 },
+          to: { row: ishikawaRow - 1, column: 2 },
+          columns: firstMachine ? [{
+            colId: 1,
+            filters: { filter: [firstMachine] }
+          }] : undefined
+        };
+
+        // ---- Hoja: Pareto ----
+        const paretoSheet = workbook.addWorksheet('Pareto');
+        paretoSheet.getCell('A1').value = 'Fecha';
+        paretoSheet.getCell('B1').value = 'Máquina';
+        const paretoHeader = paretoSheet.getRow(1);
+        paretoHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E79' } };
+        paretoHeader.font = { bold: true, size: 11, name: 'Calibri', color: { argb: 'FFFFFFFF' } };
+        paretoHeader.alignment = { vertical: 'middle', horizontal: 'center' };
+        paretoHeader.height = 20;
+
+        const paretoSheetMachines = exportHistory
+          .filter(e => {
+            const data = e.ishikawa || {};
+            return CATEGORY_ORDER.some(key => (data[key] || '').trim());
+          })
+          .map(e => e.maquina)
+          .filter(Boolean);
+        const firstMachinePareto = [...new Set(paretoSheetMachines)].sort()[0];
+
+        let paretoRow = 2;
+        exportHistory.forEach(entry => {
+          const ishikawaData = entry.ishikawa || {};
+          const paretoItems = CATEGORY_ORDER.map(key => {
+            const value = (ishikawaData[key] || '').trim();
+            if (!value) return null;
+            const causes = value.split(/[,.\n]+/).map(s => s.trim()).filter(s => s.length > 0);
+            return { causa: ISHIKAWA_CATEGORY_CONFIG[key].label, frecuencia: causes.length };
+          }).filter(Boolean);
+          if (paretoItems.length === 0) return;
+          paretoSheet.getCell(`A${paretoRow}`).value = entry.fecha;
+          paretoSheet.getCell(`B${paretoRow}`).value = entry.maquina;
+          paretoSheet.getCell(`A${paretoRow}`).font = { size: 11, name: 'Calibri' };
+          paretoSheet.getCell(`B${paretoRow}`).font = { size: 11, name: 'Calibri' };
+          paretoRow++;
+          const imgData = createSimplifiedPareto(paretoItems);
+          if (imgData && imgData.imgData) {
+            const base64Data = imgData.imgData.split(',')[1];
+            const imgId = workbook.addImage({ base64: base64Data, extension: 'png' });
+            paretoSheet.addImage(imgId, {
+              tl: { col: 0, row: paretoRow },
+              br: { col: 15, row: paretoRow + 30 }
+            });
+            paretoRow += 31;
+          }
+        });
+        paretoSheet.getColumn(1).width = 16;
+        paretoSheet.getColumn(2).width = 30;
+        paretoSheet.autoFilter = {
+          from: { row: 1, column: 1 },
+          to: { row: paretoRow - 1, column: 2 },
+          columns: firstMachinePareto ? [{
+            colId: 1,
+            filters: { filter: [firstMachinePareto] }
+          }] : undefined
+        };
 
         const rawBuffer = await workbook.xlsx.writeBuffer();
         const buffer = new Uint8Array(rawBuffer);
-
-        if ('showSaveFilePicker' in window) {
-          try {
-            const handle = await window.showSaveFilePicker({
-              suggestedName: 'Diagnostico_Fallas.xlsx',
-              types: [{
-                description: 'Archivo Excel',
-                accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] }
-              }]
-            });
-            const writable = await handle.createWritable();
-            await writable.write(buffer);
-            await writable.close();
-          } catch (error) {
-            if (error.name !== 'AbortError') {
-              alert('Error al guardar: ' + error.message);
-            }
-          }
-        } else {
-          const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'Diagnostico_Fallas.xlsx';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Diagnostico_Fallas.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
       } catch (error) {
         console.error('Error en exportExcel:', error);
         alert('Error al exportar a Excel: ' + (error.message || error));
@@ -1606,7 +1686,7 @@
         return dst;
       }
 
-      function createSimplifiedIshikawa() {
+      function createSimplifiedIshikawa(ishikawaData, problemaText) {
         const canvas = document.createElement('canvas');
         canvas.width = 1000;
         canvas.height = 420;
@@ -1618,7 +1698,7 @@
         const categories = CATEGORY_ORDER.map(key => ({
           key,
           label: ISHIKAWA_CATEGORY_CONFIG[key].label,
-          value: (document.getElementById(`ishikawa-${key}`)?.value || '').trim()
+          value: ishikawaData ? (ishikawaData[key] || '') : (document.getElementById(`ishikawa-${key}`)?.value || '').trim()
         }));
 
         const hasData = categories.some(c => c.value);
@@ -1792,7 +1872,7 @@
         });
 
         // Problem / effect box
-        const problema = (document.getElementById('descripcionProblema')?.value || '').trim() || 'No definido';
+        const problema = problemaText || (document.getElementById('descripcionProblema')?.value || '').trim() || 'No definido';
         const pbX = 767, pbY = 164, pbW = 220, pbH = 120, pbR = 10;
         ctx.fillStyle = '#1e3a5f';
         roundRect(ctx, pbX, pbY, pbW, pbH, pbR);
@@ -1822,7 +1902,7 @@
       }
       
       // Función para crear diagrama Pareto simplificado
-      function createSimplifiedPareto() {
+      function createSimplifiedPareto(paretoItems) {
         const canvas = document.createElement('canvas');
         canvas.width = 500;
         canvas.height = 300;
@@ -1832,10 +1912,10 @@
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Obtener datos del Pareto desde Ishikawa
-        const paretoItems = getIshikawaParetoData();
+        // Obtener datos del Pareto (desde parámetro o desde Ishikawa actual)
+        const items = paretoItems || getIshikawaParetoData();
 
-        if (paretoItems.length === 0) {
+        if (items.length === 0) {
           ctx.font = '12px Arial';
           ctx.fillStyle = '#666666';
           ctx.fillText('No hay datos de Pareto disponibles', 150, 150);
@@ -1844,16 +1924,16 @@
         }
 
         // Ordenar por frecuencia descendente
-        paretoItems.sort((a, b) => b.frecuencia - a.frecuencia);
+        items.sort((a, b) => b.frecuencia - a.frecuencia);
 
         // Configuración del gráfico
         const margin = { top: 30, right: 55, bottom: 60, left: 55 };
         const chartWidth = canvas.width - margin.left - margin.right;
         const chartHeight = canvas.height - margin.top - margin.bottom;
 
-        const maxFreq = Math.max(...paretoItems.map(item => item.frecuencia));
-        const totalFreq = paretoItems.reduce((sum, item) => sum + item.frecuencia, 0);
-        const barSpacing = chartWidth / paretoItems.length;
+        const maxFreq = Math.max(...items.map(item => item.frecuencia));
+        const totalFreq = items.reduce((sum, item) => sum + item.frecuencia, 0);
+        const barSpacing = chartWidth / items.length;
         const barWidth = Math.min(barSpacing * 0.65, 50);
 
         const startX = margin.left;
@@ -1923,7 +2003,7 @@
         let acumulado = 0;
         const linePoints = [];
 
-        paretoItems.forEach((item, index) => {
+        items.forEach((item, index) => {
           const barHeight = (item.frecuencia / maxFreq) * chartHeight;
           const x = startX + (index * barSpacing) + (barSpacing - barWidth) / 2;
           const y = startY - barHeight;
