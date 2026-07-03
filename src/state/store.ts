@@ -11,6 +11,7 @@ export interface RCACaptura {
   problema?: string;
   sintomas?: string;
   responsable?: string;
+  indicador?: string;
 }
 
 export interface RCAWhys {
@@ -78,6 +79,7 @@ export interface ExportHistoryEntry {
   fecha: string;
   maquina: string;
   problema: string;
+  indicador?: string;
   tipoAccion: string;
   correctivoText: string;
   preventivoText: string;
@@ -196,7 +198,7 @@ export function hasData(): boolean {
   const ish = rcaData.ishikawa || {};
 
   return !!(
-    f.fecha || f.maquina || f.tiempoParo || f.problema || f.sintomas || f.responsable ||
+    f.fecha || f.maquina || f.tiempoParo || f.problema || f.sintomas || f.responsable || f.indicador ||
     w.why1 || w.why2 || w.why3 || w.why4 || w.why5 ||
     ish.maquina || ish.metodo || ish.materiales || ish.manoObra || ish.medicion || ish.medioAmbiente ||
     rcaData.acciones.correctivas.length > 0 || rcaData.acciones.preventivas.length > 0
@@ -266,6 +268,7 @@ export function buildSectionRows(section: DataSection, source?: RCAData): string
       { key: 'problema', label: 'Problema' },
       { key: 'fecha', label: 'Fecha', format: formatDate },
       { key: 'tiempoParo', label: 'Tiempo Paro', format: formatTiempoParo },
+      { key: 'indicador', label: 'Indicador' },
       { key: 'sintomas', label: 'Síntomas' },
       { key: 'responsable', label: 'Responsable' }
     ];
@@ -455,6 +458,7 @@ export function buildDataRows(): string {
       { key: 'problema', label: 'Problema' },
       { key: 'fecha', label: 'Fecha' },
       { key: 'tiempoParo', label: 'Tiempo Paro' },
+      { key: 'indicador', label: 'Indicador' },
       { key: 'sintomas', label: 'Síntomas' },
       { key: 'responsable', label: 'Responsable' }
     ];

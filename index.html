@@ -33,6 +33,7 @@
       <div class="header-actions">
         <button onclick="window.__toggleTableView()" class="header-btn header-btn-table" title="Ver todos los datos en tabla">
           <i class="fas fa-th"></i>
+          <span>Todos los datos</span>
         </button>
       </div>
     </div>
@@ -125,6 +126,24 @@
               <input type="number" id="tiempoParo" min="0" placeholder="0" class="std-input">
             </div>
             <div>
+              <label class="std-label">Indicadores afectados</label>
+              <div class="flex flex-wrap gap-2">
+                <label class="indicador-pill">
+                  <input type="checkbox" name="indicador" value="MTTR" onchange="window.__syncIndicador()">
+                  <span>MTTR</span>
+                </label>
+                <label class="indicador-pill">
+                  <input type="checkbox" name="indicador" value="MTBF" onchange="window.__syncIndicador()">
+                  <span>MTBF</span>
+                </label>
+                <label class="indicador-pill">
+                  <input type="checkbox" name="indicador" value="TNP" onchange="window.__syncIndicador()">
+                  <span>TNP</span>
+                </label>
+                <input type="hidden" id="indicador" value="">
+              </div>
+            </div>
+            <div class="sm:col-span-2">
               <label class="std-label" for="responsable">Responsable del análisis</label>
               <input type="text" id="responsable" name="responsable" placeholder="Nombre del analista" class="std-input">
             </div>

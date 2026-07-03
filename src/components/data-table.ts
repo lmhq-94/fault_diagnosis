@@ -319,10 +319,11 @@ export async function deleteSection(
   if (section === 'captura') {
     rcaData.captura = {};
     savedRcaData.captura = {};
-    ['maquina', 'descripcionProblema', 'fechaEvento', 'tiempoParo', 'sintomas', 'responsable'].forEach(id => {
+    ['maquina', 'descripcionProblema', 'fechaEvento', 'tiempoParo', 'sintomas', 'responsable', 'indicador'].forEach(id => {
       const el = document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
       if (el) el.value = '';
     });
+    document.querySelectorAll<HTMLInputElement>('input[name="indicador"]').forEach(cb => cb.checked = false);
   } else if (section === 'ishikawa') {
     rcaData.ishikawa = {};
     savedRcaData.ishikawa = {};

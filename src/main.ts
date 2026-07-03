@@ -66,6 +66,7 @@ declare global {
     __switchDataTab: (section: string) => void;
     __viewIshikawaFullscreen: () => void;
     __closeIshikawaModal: () => void;
+    __syncIndicador: () => void;
   }
 }
 
@@ -82,6 +83,7 @@ function registerGlobalAPI(): void {
   window.__closeTableView = closeTableView;
   window.__clearAll = clearAll;
   window.__clearAllFromTable = clearAllFromTable;
+  window.__syncIndicador = syncIndicador;
   window.__whysNext = () => {
     whysNext(syncPlan, persistCurrentState);
     updateStepNav();
@@ -385,14 +387,27 @@ function updateClearAllButton(): void {
    Save Captura
    ========================================================================== */
 
+function syncIndicador(): void {
+  const checked = Array.from(document.querySelectorAll<HTMLInputElement>('input[name="indicador"]:checked'))
+    .map(cb => cb.value)
+    .join(',');
+  const hidden = document.getElementById('indicador') as HTMLInputElement | null;
+  if (hidden) {
+    hidden.value = checked;
+    hidden.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+}
+
 function saveCaptura(): void {
+  syncIndicador();
   rcaData.captura = {
     fecha: (document.getElementById('fechaEvento') as HTMLInputElement)?.value || '',
     maquina: (document.getElementById('maquina') as HTMLSelectElement)?.value || '',
     tiempoParo: (document.getElementById('tiempoParo') as HTMLInputElement)?.value || '',
     problema: (document.getElementById('descripcionProblema') as HTMLTextAreaElement)?.value || '',
     sintomas: (document.getElementById('sintomas') as HTMLTextAreaElement)?.value || '',
-    responsable: (document.getElementById('responsable') as HTMLInputElement)?.value || ''
+    responsable: (document.getElementById('responsable') as HTMLInputElement)?.value || '',
+    indicador: (document.getElementById('indicador') as HTMLInputElement)?.value || ''
   };
 
   if (!rcaData.captura.problema) {
@@ -406,11 +421,12 @@ function saveCaptura(): void {
 }
 
 function clearCaptura(): void {
-  const ids = ['fechaEvento', 'maquina', 'tiempoParo', 'descripcionProblema', 'sintomas', 'responsable'];
+  const ids = ['fechaEvento', 'maquina', 'tiempoParo', 'descripcionProblema', 'sintomas', 'responsable', 'indicador'];
   ids.forEach(id => {
     const el = document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
     if (el) el.value = '';
   });
+  document.querySelectorAll<HTMLInputElement>('input[name="indicador"]').forEach(cb => cb.checked = false);
   rcaData.captura = {};
   syncPlanFromAnalysis();
   persistCurrentState();
@@ -584,11 +600,12 @@ async function clearAll(skipConfirm = false): Promise<void> {
     if (!confirmed) return;
   }
 
-  const ids = ['fechaEvento', 'maquina', 'tiempoParo', 'descripcionProblema', 'sintomas', 'responsable'];
+  const ids = ['fechaEvento', 'maquina', 'tiempoParo', 'descripcionProblema', 'sintomas', 'responsable', 'indicador'];
   ids.forEach(id => {
     const el = document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
     if (el) el.value = '';
   });
+  document.querySelectorAll<HTMLInputElement>('input[name="indicador"]').forEach(cb => cb.checked = false);
 
   CATEGORY_ORDER.forEach(cat => {
     const el = document.getElementById(`ishikawa-${cat}`) as HTMLTextAreaElement | null;
@@ -675,7 +692,7 @@ async function clearAllFromTable(): Promise<void> {
 function addDataListeners(): void {
   const capturaFields = [
     'fechaEvento', 'maquina', 'tiempoParo',
-    'descripcionProblema', 'sintomas', 'responsable'
+    'descripcionProblema', 'sintomas', 'responsable', 'indicador'
   ];
   capturaFields.forEach(id => {
     const field = document.getElementById(id);
@@ -839,6 +856,14 @@ window.addEventListener('DOMContentLoaded', function() {
     if (rcaData.captura.responsable) {
       const el = document.getElementById('responsable') as HTMLInputElement | null;
       if (el) el.value = rcaData.captura.responsable;
+    }
+    if (rcaData.captura.indicador) {
+      const values = rcaData.captura.indicador.split(',');
+      document.querySelectorAll<HTMLInputElement>('input[name="indicador"]').forEach(cb => {
+        cb.checked = values.includes(cb.value);
+      });
+      const hidden = document.getElementById('indicador') as HTMLInputElement | null;
+      if (hidden) hidden.value = rcaData.captura.indicador;
     }
 
     if (typeof rcaData.whys.wizardLevel !== 'number') {

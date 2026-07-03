@@ -201,6 +201,7 @@ async function exportPDF(
     addField('Fecha del evento:', fechaStr);
     addField('Máquina / Equipo:', captura.maquina || 'No especificada');
     addField('Tiempo de paro:', captura.tiempoParo ? `${captura.tiempoParo} minutos` : 'No especificado');
+    addField('Indicador afectado:', captura.indicador || 'No especificado');
     addField('Responsable:', captura.responsable || 'No especificado');
 
     addHR();

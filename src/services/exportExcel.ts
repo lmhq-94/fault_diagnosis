@@ -49,7 +49,7 @@ export async function exportExcel(
     });
 
     const headers = [
-      'Fecha', 'Máquina', 'Problema', 'Tipo de Mantenimiento',
+      'Fecha', 'Máquina', 'Problema', 'Indicador', 'Tipo de Mantenimiento',
       'Plan de Acción Correctivo', 'Plan de Acción Preventivo',
       'Status del Plan', 'Responsable', 'Fecha de Finalización', 'Causa Raíz'
     ];
@@ -80,6 +80,7 @@ export async function exportExcel(
       fecha: rcaData.captura.fecha || '',
       maquina: rcaData.captura.maquina || '',
       problema: rcaData.captura.problema || '',
+      indicador: rcaData.captura.indicador || '',
       tipoAccion,
       correctivoText: todasAcciones.length > 0 ? correctivoText : '',
       preventivoText: todasAcciones.length > 0 ? preventivoText : '',
@@ -99,7 +100,7 @@ export async function exportExcel(
 
     exportHistory.forEach((entry, i) => {
       const row = reporteSheet.addRow([
-        entry.fecha, entry.maquina, entry.problema, entry.tipoAccion,
+        entry.fecha, entry.maquina, entry.problema, entry.indicador || '', entry.tipoAccion,
         entry.correctivoText, entry.preventivoText, entry.status || 'Pendiente',
         entry.responsable, entry.fechaFin, entry.causaRaiz
       ]);
@@ -118,7 +119,7 @@ export async function exportExcel(
           right: { style: 'thin', color: { argb: colors.grayBorder } },
         };
         // Center narrow columns
-        if ([1, 4, 7].includes(colIdx)) {
+        if ([1, 5, 8].includes(colIdx)) {
           cell.alignment = { vertical: 'top', horizontal: 'center', wrapText: true };
         }
       });
@@ -126,10 +127,10 @@ export async function exportExcel(
 
     const lastRow = exportHistory.length + 1;
     reporteSheet.autoFilter = {
-      from: { row: 1, column: 1 }, to: { row: lastRow, column: 10 }
+      from: { row: 1, column: 1 }, to: { row: lastRow, column: 11 }
     };
 
-    const maxWidths = [14, 22, 55, 20, 70, 70, 16, 28, 18, 55];
+    const maxWidths = [14, 22, 55, 14, 20, 70, 70, 16, 28, 18, 55];
     reporteSheet.columns.forEach((col: any, i: number) => {
       let maxLen = 0;
       col.eachCell((cell: any) => {
