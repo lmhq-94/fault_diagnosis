@@ -127,16 +127,16 @@
             </div>
             <div>
               <label class="std-label">Indicadores afectados</label>
-              <div class="flex flex-wrap gap-2">
-                <label class="indicador-pill">
+              <div class="flex flex-wrap gap-2 w-full">
+                <label class="indicador-pill flex-1 min-w-[120px] justify-center">
                   <input type="checkbox" name="indicador" value="MTTR" onchange="window.__syncIndicador()">
                   <span>MTTR</span>
                 </label>
-                <label class="indicador-pill">
+                <label class="indicador-pill flex-1 min-w-[120px] justify-center">
                   <input type="checkbox" name="indicador" value="MTBF" onchange="window.__syncIndicador()">
                   <span>MTBF</span>
                 </label>
-                <label class="indicador-pill">
+                <label class="indicador-pill flex-1 min-w-[120px] justify-center">
                   <input type="checkbox" name="indicador" value="TNP" onchange="window.__syncIndicador()">
                   <span>TNP</span>
                 </label>
@@ -391,6 +391,10 @@
             <div class="resumen-item">
               <strong>Causa Raíz:</strong>
               <span id="resumenCausa">No definida</span>
+            </div>
+            <div class="resumen-item">
+              <strong>Indicadores afectados:</strong>
+              <span id="resumenIndicadores">Ninguno</span>
             </div>
           </div>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

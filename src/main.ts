@@ -548,9 +548,14 @@ function syncPlanFromAnalysis(): void {
 function updateResumen(): void {
   const resumenProblema = document.getElementById('resumenProblema');
   const resumenCausa = document.getElementById('resumenCausa');
+  const resumenIndicadores = document.getElementById('resumenIndicadores');
   if (resumenProblema) resumenProblema.textContent = rcaData.captura.problema || 'No definido';
   const causaRaiz = getCurrentCauseSummary();
   if (resumenCausa) resumenCausa.textContent = causaRaiz || 'No definida';
+  if (resumenIndicadores) {
+    const indicadores = rcaData.captura.indicador ? rcaData.captura.indicador.split(',').join(', ') : 'Ninguno';
+    resumenIndicadores.textContent = indicadores;
+  }
 }
 
 /* ==========================================================================
