@@ -1,6 +1,7 @@
 import { rcaData, CATEGORY_ORDER, ISHIKAWA_CATEGORY_CONFIG, type ExportHistoryEntry } from '../state/store';
 import { escapeHtml } from '../utils/text';
 import { showToast } from '../utils/toast';
+import { handleError } from '../utils/errorHandler';
 import { getCurrentCauseSummary } from '../state/store';
 import { createSimplifiedIshikawa, createSimplifiedPareto } from './exportPDF';
 import { recordRootCauseForPareto } from './pareto';
@@ -77,7 +78,7 @@ export async function exportExcel(
     const fechasFin = todasAcciones.map(a => a.fecha).filter(Boolean).join(', ');
 
     const currentEntry: ExportHistoryEntry = {
-      fecha: rcaData.captura.fecha || '',
+      fecha: rcaData.captura.fecha?.join(', ') || '',
       maquina: rcaData.captura.maquina || '',
       problema: rcaData.captura.problema || '',
       indicador: rcaData.captura.indicador || '',
@@ -279,7 +280,6 @@ export async function exportExcel(
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 
   } catch (error: any) {
-    console.error('Error en exportExcel:', error);
-    showToast('Error al exportar a Excel: ' + (error.message || error), 'error');
+    handleError(error, 'exportar a Excel');
   }
 }

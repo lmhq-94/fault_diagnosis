@@ -13,12 +13,20 @@ export interface IshikawaHistoryEntry {
 
 /** Gets Ishikawa history by machine */
 export function getIshikawaHistory(): Record<string, IshikawaHistoryEntry> {
-  return JSON.parse(localStorage.getItem('ishikawaHistory') || '{}');
+  try {
+    return JSON.parse(localStorage.getItem('ishikawaHistory') || '{}');
+  } catch {
+    return {};
+  }
 }
 
 /** Saves Ishikawa history */
 function saveIshikawaHistory(data: Record<string, IshikawaHistoryEntry>): void {
-  localStorage.setItem('ishikawaHistory', JSON.stringify(data));
+  try {
+    localStorage.setItem('ishikawaHistory', JSON.stringify(data));
+  } catch {
+    // localStorage may be full or unavailable — silently skip
+  }
 }
 
 /** Updates the Ishikawa diagram for a machine (merges new causes with existing, no duplicates) */

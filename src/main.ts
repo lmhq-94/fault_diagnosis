@@ -3,6 +3,10 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { rcaData, setRcaData, setSavedRcaData, commitWizardDataToSaved, persistCurrentState, hasData, CATEGORY_ORDER, type RCAData } from './state/store';
 import { escapeHtml, getTodayISODate } from './utils/text';
 import { showToast } from './utils/toast';
+import { logError, logWarn, logInfo } from './utils/logger';
+import { initLogViewer } from './components/log-viewer';
+import { handleError } from './utils/errorHandler';
+import { initModal } from './utils/ui';
 import { confirmAction, confirmDanger } from './utils/confirm';
 import { saveAnalysisFile, updateAnalysisFile, checkAnalysisFile, loadAnalysis, deleteAnalysis } from './services/analysisStorage';
 import { getCurrentCauseSummary } from './state/store';
@@ -15,12 +19,20 @@ import {
   saveIshikawa, clearIshikawa
 } from './components/ishikawa';
 import { addAccion, removeAccion, addAccionToDOM, clearActionPlan } from './components/plan';
+import { renderDatepicker, getDatepickerValue, setDatepickerValue } from './components/datepicker';
 import { toggleReviewDrawer, openReviewDrawer, closeReviewDrawer, renderDrawerTable } from './components/drawer';
 import { toggleTableView, openTableView, closeTableView, renderDataTable, startEdit, saveEdit, cancelEdit, deleteField, deleteSection, deletePlanRow, switchDataTab } from './components/data-table';
 import { exportExcel } from './services/exportExcel';
 import { handlePDFExport, createSimplifiedIshikawa, createSimplifiedPareto } from './services/exportPDF';
 import { recordRootCauseForPareto, getIshikawaParetoData, getAccumulatedParetoData } from './services/pareto';
 import { getIshikawaHistory, updateIshikawaForMachine } from './services/ishikawaHistory';
+import {
+  showTab, navigateStep, updateStepNav, updateNextButtonState,
+  updateTabLockState, updateClearAllButton, updateResumen,
+  syncPlanFromAnalysis, clearCurrentStep, toggleStepMenu,
+  clearCaptura, saveCaptura, syncIndicador, saveIshikawaData,
+  updateIshikawaGenerateBtn, resetWhysState, STEPS
+} from './components/navigation';
 
 /* ==========================================================================
    Global API for Inline Event Handlers
@@ -141,322 +153,15 @@ function registerGlobalAPI(): void {
   });
 }
 
-/* ==========================================================================
-   Tab Navigation
-   ========================================================================== */
 
-function showTab(tabName: string): void {
-  if (tabName !== 'captura') {
-    const tabBtn = document.getElementById(`tab-${tabName}`);
-    if (tabBtn && tabBtn.classList.contains('tab-locked')) {
-      return;
-    }
-  }
-
-  document.querySelectorAll('[id^="content-"]').forEach(el => el.classList.add('hidden'));
-  document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.remove('tab-active'));
-
-  document.getElementById(`content-${tabName}`)?.classList.remove('hidden');
-  document.getElementById(`tab-${tabName}`)?.classList.add('tab-active');
-
-  if (tabName === 'ishikawa') {
-    refreshIshikawaDiagram();
-    updateIshikawaGenerateBtn();
-  }
-
-  if (tabName === 'plan') {
-    syncPlanFromAnalysis();
-  }
-
-  if (tabName === '5whys') {
-    updateTabLockState();
-  }
-
-  // Persist current step so it's restored on refresh
-  localStorage.setItem('rcaCurrentStep', tabName);
-
-  updateStepNav();
-}
 
 /* ==========================================================================
-   Step Navigation
+   Ishikawa Generate
    ========================================================================== */
-
-const STEPS = ['captura', 'ishikawa', '5whys', 'plan'] as const;
-type StepName = (typeof STEPS)[number];
-
-function navigateStep(dir: number): void {
-  const currentTab = document.querySelector('[id^="content-"]:not(.hidden)');
-  if (!currentTab) return;
-  const currentId = currentTab.id.replace('content-', '');
-  const currentIndex = STEPS.indexOf(currentId as StepName);
-  if (currentIndex === -1) return;
-
-  const nextIndex = currentIndex + dir;
-  if (nextIndex < 0 || nextIndex >= STEPS.length) return;
-
-  const nextTab = STEPS[nextIndex];
-
-  // Save current step data before navigating
-  if (currentId === 'captura') {
-    saveCaptura();
-    if (!rcaData.captura.problema) return; // validation failed
-  } else if (currentId === 'ishikawa') {
-    saveIshikawaData();
-  } else if (currentId === '5whys') {
-    // Capture the active why input before navigating
-    const input = document.getElementById('why-active-input') as HTMLInputElement | null;
-    if (input) {
-      const level = rcaData.whys.wizardLevel;
-      if (level >= 1 && level <= 5) {
-      if (level === 1) rcaData.whys.why1 = input.value.trim();
-      else if (level === 2) rcaData.whys.why2 = input.value.trim();
-      else if (level === 3) rcaData.whys.why3 = input.value.trim();
-      else if (level === 4) rcaData.whys.why4 = input.value.trim();
-      else if (level === 5) rcaData.whys.why5 = input.value.trim();
-      }
-    }
-    persistCurrentState();
-  }
-
-  showTab(nextTab);
-
-  if (currentId === '5whys') {
-    updateTabLockState();
-  }
-}
-
-function saveIshikawaData(): void {
-  CATEGORY_ORDER.forEach(cat => {
-    const field = document.getElementById(`ishikawa-${cat}`) as HTMLTextAreaElement | null;
-    if (field && field.value.trim()) {
-      rcaData.ishikawa[cat] = field.value.trim();
-    }
-  });
-  refreshIshikawaDiagram();
-  syncPlanFromAnalysis();
-  persistCurrentState();
-  updateTabLockState();
-}
-
-function updateStepNav(): void {
-  const currentTab = document.querySelector('[id^="content-"]:not(.hidden)');
-  if (!currentTab) return;
-  const currentId = currentTab.id.replace('content-', '');
-  const currentIndex = STEPS.indexOf(currentId as StepName);
-  if (currentIndex === -1) return;
-
-  // Update dots
-  const dots = document.querySelectorAll('.step-nav-dot');
-  dots.forEach((dot, i) => {
-    dot.classList.toggle('active', i === currentIndex);
-    dot.classList.toggle('completed', i < currentIndex);
-  });
-
-  // Hide prev button on first step (captura), enable otherwise
-  const prevBtn = document.getElementById('step-nav-prev') as HTMLButtonElement | null;
-  if (prevBtn) {
-    prevBtn.style.display = currentIndex === 0 ? 'none' : '';
-    prevBtn.disabled = false;
-  }
-
-  // Show "Acciones" label only on the first step
-  const accionesLabel = document.querySelector('#step-nav-more button span');
-  if (accionesLabel) {
-    (accionesLabel as HTMLElement).style.display = currentIndex === 0 ? '' : 'none';
-  }
-
-  // Update the right side
-  const navRight = document.getElementById('step-nav-right');
-  if (!navRight) return;
-
-  if (currentId === 'plan') {
-    // Last step - show "Guardar" button
-    navRight.innerHTML = `
-      <button id="step-nav-save" class="step-nav-btn step-nav-btn-success" onclick="window.__saveAnalysis()">
-        <i class="fas fa-save"></i>
-        <span>Guardar</span>
-      </button>
-    `;
-    return;
-  }
-
-  // Show "Siguiente" button (always says "Siguiente" and blue for the whys tab)
-  const isLast = currentIndex === STEPS.length - 2;
-  const isWhys = currentId === '5whys';
-  const nextLabel = isWhys ? 'Siguiente' : (isLast ? 'Finalizar' : 'Siguiente');
-  const nextIcon = isWhys ? 'fa-arrow-right' : (isLast ? 'fa-check-circle' : 'fa-arrow-right');
-  const nextClass = isWhys ? 'step-nav-btn-primary' : (isLast ? 'step-nav-btn-success' : 'step-nav-btn-primary');
-
-  navRight.innerHTML = `
-    <button id="step-nav-next" class="step-nav-btn ${nextClass}" onclick="window.__navigateStep(1)" disabled>
-      <span>${nextLabel}</span>
-      <i class="fas ${nextIcon}"></i>
-    </button>
-  `;
-
-  updateNextButtonState(currentId);
-}
-
-function updateNextButtonState(tabId: string): void {
-  const nextBtn = document.getElementById('step-nav-next') as HTMLButtonElement | null;
-  if (!nextBtn) return;
-
-  // Only validate Captura - other steps are always enabled
-  if (tabId === 'captura') {
-    const problema = (document.getElementById('descripcionProblema') as HTMLTextAreaElement)?.value?.trim() || '';
-    nextBtn.disabled = !problema;
-  } else {
-    nextBtn.disabled = false;
-  }
-}
-
-/* ==========================================================================
-   Stepper State Management
-   ========================================================================== */
-
-function updateTabLockState(): void {
-  const c = rcaData.captura || {};
-  const w = rcaData.whys || {};
-  const ish = rcaData.ishikawa || {};
-  const acciones = rcaData.acciones || { correctivas: [], preventivas: [] };
-
-  // Step 1: Captura — checked only when ALL fields are filled
-  const allCapturaFields = [c.fecha, c.maquina, c.tiempoParo, c.problema, c.sintomas, c.responsable];
-  const capturaCompleta = allCapturaFields.every(val => !!val);
-
-  // Step 2: Ishikawa — checked only when ALL 6 cards are filled
-  const ishikawaCompleto = CATEGORY_ORDER.every(cat => !!ish[cat]);
-
-  // Step 3: 5 Porqués — checked only after navigating away (Siguiente) with at least 1 why
-  const onWhysTab = !document.getElementById('content-5whys')?.classList.contains('hidden');
-  const whysCompleto = !onWhysTab && !!(w.why1 || w.why2 || w.why3 || w.why4 || w.why5);
-
-  // Step 4: Plan — checked when at least 1 correctiva OR 1 preventiva
-  const planCompleto = !!(acciones.correctivas.length > 0 || acciones.preventivas.length > 0);
-
-  // Captura unlocks tabs when just the problem is filled
-  const capturaDesbloqueada = !!c.problema;
-
-  // Unlock tabs based on captura having at least the problem
-  const lockedTabs = ['ishikawa', '5whys', 'plan'];
-  lockedTabs.forEach(tabName => {
-    const btn = document.getElementById(`tab-${tabName}`);
-    if (!btn) return;
-    if (capturaDesbloqueada) {
-      btn.classList.remove('tab-locked');
-      btn.onclick = null;
-      btn.onclick = function() { showTab(tabName); };
-    } else {
-      btn.classList.add('tab-locked');
-    }
-  });
-
-  // Show/hide "Resumen" buttons only when captura has data
-  document.querySelectorAll('.step-header-actions').forEach(el => {
-    el.classList.toggle('hidden', !capturaDesbloqueada);
-  });
-
-  const toggleComplete = (id: string, condition: boolean) => {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('completed', condition);
-  };
-
-  toggleComplete('tab-captura', capturaCompleta);
-  toggleComplete('conn-0', capturaCompleta);
-  toggleComplete('tab-ishikawa', ishikawaCompleto && capturaDesbloqueada);
-  toggleComplete('conn-1', ishikawaCompleto && capturaDesbloqueada);
-  toggleComplete('tab-5whys', whysCompleto && capturaDesbloqueada);
-  toggleComplete('conn-2', whysCompleto && capturaDesbloqueada);
-  toggleComplete('tab-plan', planCompleto && capturaDesbloqueada);
-}
-
-/* ==========================================================================
-   Clear All Button Visibility
-   ========================================================================== */
-
-function updateClearAllButton(): void {
-  const hasDataVal = hasData();
-  ['clearAllBtnDrawer', 'clearAllBtnTable'].forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) btn.classList.toggle('hidden', !hasDataVal);
-  });
-}
-
-/* ==========================================================================
-   Save Captura
-   ========================================================================== */
-
-function syncIndicador(): void {
-  const checked = Array.from(document.querySelectorAll<HTMLInputElement>('input[name="indicador"]:checked'))
-    .map(cb => cb.value)
-    .join(',');
-  const hidden = document.getElementById('indicador') as HTMLInputElement | null;
-  if (hidden) {
-    hidden.value = checked;
-    hidden.dispatchEvent(new Event('change', { bubbles: true }));
-  }
-}
-
-function saveCaptura(): void {
-  syncIndicador();
-  rcaData.captura = {
-    fecha: (document.getElementById('fechaEvento') as HTMLInputElement)?.value || '',
-    maquina: (document.getElementById('maquina') as HTMLSelectElement)?.value || '',
-    tiempoParo: (document.getElementById('tiempoParo') as HTMLInputElement)?.value || '',
-    problema: (document.getElementById('descripcionProblema') as HTMLTextAreaElement)?.value || '',
-    sintomas: (document.getElementById('sintomas') as HTMLTextAreaElement)?.value || '',
-    responsable: (document.getElementById('responsable') as HTMLInputElement)?.value || '',
-    indicador: (document.getElementById('indicador') as HTMLInputElement)?.value || ''
-  };
-
-  if (!rcaData.captura.problema) {
-    showToast('Describe el problema antes de continuar.', 'warning');
-    return;
-  }
-
-  syncPlanFromAnalysis();
-  persistCurrentState();
-  updateTabLockState();
-}
-
-function clearCaptura(): void {
-  const ids = ['fechaEvento', 'maquina', 'tiempoParo', 'descripcionProblema', 'sintomas', 'responsable', 'indicador'];
-  ids.forEach(id => {
-    const el = document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
-    if (el) el.value = '';
-  });
-  document.querySelectorAll<HTMLInputElement>('input[name="indicador"]').forEach(cb => cb.checked = false);
-  rcaData.captura = {};
-  syncPlanFromAnalysis();
-  persistCurrentState();
-}
-
-function resetWhysState(): void {
-  rcaData.whys = { why1: '', why2: '', why3: '', why4: '', why5: '', wizardLevel: 1 };
-}
-
-/* ==========================================================================
-   Ishikawa Generate & Button State
-   ========================================================================== */
-
-const ISHIKAWA_FIELDS = ['maquina', 'metodo', 'materiales', 'manoObra', 'medicion', 'medioAmbiente'];
-
-function updateIshikawaGenerateBtn(): void {
-  const allFilled = ISHIKAWA_FIELDS.every(cat => {
-    const field = document.getElementById(`ishikawa-${cat}`) as HTMLTextAreaElement | null;
-    return (field?.value?.trim()?.length ?? 0) > 0;
-  });
-  const btn = document.getElementById('btn-generar-ishikawa') as HTMLButtonElement | null;
-  const area = document.getElementById('ishikawa-generate-area');
-  if (btn) btn.disabled = !allFilled;
-  if (area) area.classList.toggle('ready', allFilled);
-}
 
 function generateIshikawa(): void {
   saveIshikawaData();
 
-  // Scroll to the diagram after a small delay to let it render
   setTimeout(() => {
     const diagram = document.getElementById('ishikawa-diagram');
     if (diagram && !diagram.classList.contains('hidden')) {
@@ -469,94 +174,19 @@ function generateIshikawa(): void {
    Ishikawa Fullscreen Modal
    ========================================================================== */
 
+const ishikawaModal = initModal('ish-modal-overlay', '.ish-modal-body', '#ishikawa-diagram svg');
+
 function viewIshikawaFullscreen(): void {
-  const overlay = document.getElementById('ish-modal-overlay');
-  const modalSvg = overlay?.querySelector('.ish-modal-content svg');
-  const sourceSvg = document.querySelector('#ishikawa-diagram svg');
-  if (!overlay || !modalSvg || !sourceSvg) return;
-
-  modalSvg.innerHTML = sourceSvg.innerHTML;
-
-  overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  ishikawaModal.open();
 }
 
 function closeIshikawaModal(): void {
-  const overlay = document.getElementById('ish-modal-overlay');
-  if (!overlay) return;
-  overlay.classList.remove('open');
-  document.body.style.overflow = '';
+  ishikawaModal.close();
 }
 
 /* ==========================================================================
    Step Menu & Clear Current Step
    ========================================================================== */
-
-function toggleStepMenu(e: Event): void {
-  e.stopPropagation();
-  const menu = document.getElementById('step-nav-menu');
-  if (menu) menu.classList.toggle('open');
-}
-
-async function clearCurrentStep(): Promise<void> {
-  const menu = document.getElementById('step-nav-menu');
-  if (menu) menu.classList.remove('open');
-
-  const currentTab = document.querySelector('[id^="content-"]:not(.hidden)');
-  if (!currentTab) return;
-  const currentId = currentTab.id.replace('content-', '');
-
-  const labelMap: Record<string, string> = {
-    captura: 'Captura del Problema',
-    ishikawa: 'Diagrama de Ishikawa',
-    '5whys': '5 Porqués',
-    plan: 'Plan de Acción'
-  };
-  const confirmed = await confirmAction(`¿Limpiar todos los datos de ${labelMap[currentId] || currentId}?`);
-  if (!confirmed) return;
-
-  switch (currentId) {
-    case 'captura':
-      clearCaptura();
-      break;
-    case 'ishikawa':
-      clearIshikawa(syncPlanFromAnalysis, persistCurrentState);
-      updateIshikawaGenerateBtn();
-      break;
-    case '5whys':
-      clearWhys(resetWhysState, syncPlanFromAnalysis, persistCurrentState);
-      break;
-    case 'plan':
-      clearActionPlan();
-      persistCurrentState();
-      break;
-  }
-
-  updateTabLockState();
-  updateClearAllButton();
-  updateStepNav();
-}
-
-/* ==========================================================================
-   Sync Plan from Analysis
-   ========================================================================== */
-
-function syncPlanFromAnalysis(): void {
-  updateResumen();
-}
-
-function updateResumen(): void {
-  const resumenProblema = document.getElementById('resumenProblema');
-  const resumenCausa = document.getElementById('resumenCausa');
-  const resumenIndicadores = document.getElementById('resumenIndicadores');
-  if (resumenProblema) resumenProblema.textContent = rcaData.captura.problema || 'No definido';
-  const causaRaiz = getCurrentCauseSummary();
-  if (resumenCausa) resumenCausa.textContent = causaRaiz || 'No definida';
-  if (resumenIndicadores) {
-    const indicadores = rcaData.captura.indicador ? rcaData.captura.indicador.split(',').join(', ') : 'Ninguno';
-    resumenIndicadores.textContent = indicadores;
-  }
-}
 
 /* ==========================================================================
    Save Analysis (from Plan step)
@@ -588,7 +218,7 @@ async function saveAnalysis(): Promise<void> {
     // while the wizard forms stay clean
     setRcaData(savedData);
   } catch (err) {
-    showToast('Error al guardar el análisis: ' + err, 'error');
+    handleError(err, 'guardar el análisis');
   }
 }
 
@@ -605,7 +235,8 @@ async function clearAll(skipConfirm = false): Promise<void> {
     if (!confirmed) return;
   }
 
-  const ids = ['fechaEvento', 'maquina', 'tiempoParo', 'descripcionProblema', 'sintomas', 'responsable', 'indicador'];
+  setDatepickerValue('fechaEvento-container', [getTodayISODate()]);
+  const ids = ['maquina', 'tiempoParo', 'descripcionProblema', 'sintomas', 'responsable', 'indicador'];
   ids.forEach(id => {
     const el = document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
     if (el) el.value = '';
@@ -696,7 +327,7 @@ async function clearAllFromTable(): Promise<void> {
 
 function addDataListeners(): void {
   const capturaFields = [
-    'fechaEvento', 'maquina', 'tiempoParo',
+    'maquina', 'tiempoParo',
     'descripcionProblema', 'sintomas', 'responsable', 'indicador'
   ];
   capturaFields.forEach(id => {
@@ -725,7 +356,7 @@ function addDataListeners(): void {
   }
 
   // Ishikawa fields - check all-filled state for generar button
-  ISHIKAWA_FIELDS.forEach(cat => {
+  CATEGORY_ORDER.forEach(cat => {
     const field = document.getElementById(`ishikawa-${cat}`);
     if (field) {
       field.addEventListener('input', () => {
@@ -752,12 +383,12 @@ function addDataListeners(): void {
    ========================================================================== */
 
 function initializeDatePicker(): void {
-  const fechaInput = document.getElementById('fechaEvento') as HTMLInputElement | null;
-  const today = getTodayISODate();
-  if (fechaInput) {
-    fechaInput.max = today;
-    if (!fechaInput.value) fechaInput.value = today;
-  }
+  const initialFecha = rcaData.captura.fecha?.length ? rcaData.captura.fecha : [getTodayISODate()];
+  rcaData.captura.fecha = initialFecha;
+  renderDatepicker('fechaEvento-container', initialFecha, () => {
+    persistCurrentState();
+    updateClearAllButton();
+  });
   initializeDateInputs();
   initializeDropdowns();
 }
@@ -810,19 +441,35 @@ function initializeDropdowns(): void {
 }
 
 /* ==========================================================================
+   Global Error Handlers
+   ========================================================================== */
+
+window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
+  logError('unhandledRejection', event.reason?.message || String(event.reason), event.reason);
+});
+
+window.addEventListener('error', (event: ErrorEvent) => {
+  logError('uncaughtError', event.error?.message || event.message, { message: event.message, filename: event.filename, lineno: event.lineno });
+});
+
+/* ==========================================================================
    Initialization on DOMContentLoaded
    ========================================================================== */
 
 window.addEventListener('DOMContentLoaded', function() {
   registerGlobalAPI();
+  initLogViewer();
+  logInfo('app', 'Inicializada');
   initializeDatePicker();
 
   // Restore saved data
   const saved = localStorage.getItem('rcaData');
   if (saved) {
     const parsed = JSON.parse(saved);
+    const rawFecha = parsed.captura?.fecha;
+    const restoredFecha: string[] | undefined = Array.isArray(rawFecha) ? rawFecha : (rawFecha ? [rawFecha] : undefined);
     const restored: RCAData = {
-      captura: parsed.captura || {},
+      captura: { ...(parsed.captura || {}), fecha: restoredFecha },
       whys: {
         why1: parsed.whys?.why1 || '',
         why2: parsed.whys?.why2 || '',
@@ -838,9 +485,11 @@ window.addEventListener('DOMContentLoaded', function() {
     setRcaData(restored);
     setSavedRcaData(JSON.parse(JSON.stringify(restored)));
 
-    if (rcaData.captura.fecha) {
-      const el = document.getElementById('fechaEvento') as HTMLInputElement | null;
-      if (el) el.value = rcaData.captura.fecha;
+    if (rcaData.captura.fecha?.length) {
+      setDatepickerValue('fechaEvento-container', rcaData.captura.fecha);
+    } else if (rcaData.captura.fecha === undefined) {
+      rcaData.captura.fecha = [getTodayISODate()];
+      setDatepickerValue('fechaEvento-container', [getTodayISODate()]);
     }
     if (rcaData.captura.maquina) {
       const el = document.getElementById('maquina') as HTMLSelectElement | null;
@@ -944,8 +593,10 @@ async function loadAnalysisFromJson(): Promise<void> {
 
     // Restore data to state and DOM
     const data = record.data;
+    const rawFecha = data.captura?.fecha;
+    const restoredFecha: string[] | undefined = Array.isArray(rawFecha) ? rawFecha : (rawFecha ? [rawFecha] : undefined);
     const restored: RCAData = {
-      captura: data.captura || {},
+      captura: { ...(data.captura || {}), fecha: restoredFecha },
       whys: {
         why1: data.whys?.why1 || '',
         why2: data.whys?.why2 || '',
@@ -963,8 +614,9 @@ async function loadAnalysisFromJson(): Promise<void> {
 
     // Restore DOM fields
     const cap = rcaData.captura;
-    const fechaEl = document.getElementById('fechaEvento') as HTMLInputElement | null;
-    if (fechaEl && cap.fecha) fechaEl.value = cap.fecha;
+    if (cap.fecha?.length) {
+      setDatepickerValue('fechaEvento-container', cap.fecha);
+    }
     const maqEl = document.getElementById('maquina') as HTMLSelectElement | null;
     if (maqEl && cap.maquina) maqEl.value = cap.maquina;
     const tpEl = document.getElementById('tiempoParo') as HTMLInputElement | null;
@@ -1001,7 +653,7 @@ async function loadAnalysisFromJson(): Promise<void> {
     syncPlanFromAnalysis();
     renderWhysWizard();
   } catch {
-    // Silently fail — start fresh if JSON can't be loaded
+    logWarn('loadAnalysis', 'No se pudo cargar el archivo guardado — iniciando fresco.');
   }
 }
 
@@ -1017,6 +669,6 @@ async function deleteAnalysisFile(): Promise<void> {
     showToast('Análisis eliminado.', 'success');
     await clearAll(true);
   } catch (err) {
-    showToast('Error al eliminar: ' + err, 'error');
+    handleError(err, 'eliminar el análisis');
   }
 }

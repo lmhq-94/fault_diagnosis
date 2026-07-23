@@ -8,12 +8,20 @@ import { normalizeText } from '../utils/text';
 
 /** Gets accumulated Pareto history */
 export function getParetoHistory(): Record<string, Record<string, number>> {
-  return JSON.parse(localStorage.getItem('paretoHistory') || '{}');
+  try {
+    return JSON.parse(localStorage.getItem('paretoHistory') || '{}');
+  } catch {
+    return {};
+  }
 }
 
 /** Saves Pareto history */
 function saveParetoHistory(data: Record<string, Record<string, number>>): void {
-  localStorage.setItem('paretoHistory', JSON.stringify(data));
+  try {
+    localStorage.setItem('paretoHistory', JSON.stringify(data));
+  } catch {
+    // localStorage may be full or unavailable — silently skip
+  }
 }
 
 /** Records the current root cause in the machine's accumulated history */

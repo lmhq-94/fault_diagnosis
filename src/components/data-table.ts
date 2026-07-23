@@ -1,5 +1,6 @@
-import { buildSectionRows, setEditingKey, getEditingKey, rcaData, savedRcaData, setSavedRcaData, removeActionFromState, persistCurrentState, DATA_SECTIONS, type DataSection, type RCAWhys, type RCAIshikawa } from '../state/store';
+import { buildSectionRows, setEditingKey, getEditingKey, rcaData, savedRcaData, setSavedRcaData, removeActionFromState, persistCurrentState, DATA_SECTIONS, serializeDates, parseDates, type DataSection, type RCAWhys, type RCAIshikawa } from '../state/store';
 import { confirmAction } from '../utils/confirm';
+import { showToast } from '../utils/toast';
 import { closeReviewDrawer, renderDrawerTable } from './drawer';
 import { addAccionToDOM } from './plan';
 import { updateAnalysisFile } from '../services/analysisStorage';
@@ -122,13 +123,12 @@ export function renderDataTable(): void {
 
 /** Auto-syncs the current data to the saved file */
 function tryAutoSyncFile(): void {
-  // Fire-and-forget: silently update the file in background
   (async () => {
     try {
-      persistCurrentState(); // ensure DOM data is captured
+      persistCurrentState();
       await updateAnalysisFile(savedRcaData);
     } catch {
-      // Silently fail
+      showToast('No se pudo sincronizar el archivo guardado.', 'warning');
     }
   })();
 }
@@ -200,13 +200,20 @@ function applyFieldEdit(key: string, value: string): void {
 
   if (parts[0] === 'captura') {
     rcaData.captura = rcaData.captura || {};
-    (rcaData.captura as Record<string, string>)[field] = value;
+    if (field === 'fecha') {
+      (rcaData.captura as Record<string, string[]>)[field] = parseDates(value);
+    } else {
+      (rcaData.captura as Record<string, string>)[field] = value;
+    }
     savedRcaData.captura = savedRcaData.captura || {};
-    (savedRcaData.captura as Record<string, string>)[field] = value;
+    if (field === 'fecha') {
+      (savedRcaData.captura as Record<string, string[]>)[field] = parseDates(value);
+    } else {
+      (savedRcaData.captura as Record<string, string>)[field] = value;
+    }
     const domMap: Record<string, string> = {
       maquina: 'maquina',
       problema: 'descripcionProblema',
-      fecha: 'fechaEvento',
       tiempoParo: 'tiempoParo',
       sintomas: 'sintomas',
       responsable: 'responsable'
@@ -319,10 +326,15 @@ export async function deleteSection(
   if (section === 'captura') {
     rcaData.captura = {};
     savedRcaData.captura = {};
-    ['maquina', 'descripcionProblema', 'fechaEvento', 'tiempoParo', 'sintomas', 'responsable', 'indicador'].forEach(id => {
+    ['maquina', 'descripcionProblema', 'tiempoParo', 'sintomas', 'responsable', 'indicador'].forEach(id => {
       const el = document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
       if (el) el.value = '';
     });
+    const fechaContainer = document.getElementById('fechaEvento-container');
+    if (fechaContainer) {
+      const hidden = fechaContainer.querySelector('input[type="hidden"]') as HTMLInputElement | null;
+      if (hidden) hidden.value = '';
+    }
     document.querySelectorAll<HTMLInputElement>('input[name="indicador"]').forEach(cb => cb.checked = false);
   } else if (section === 'ishikawa') {
     rcaData.ishikawa = {};

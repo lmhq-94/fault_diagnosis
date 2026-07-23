@@ -1,11 +1,11 @@
-import { escapeHtml } from '../utils/text';
+import { escapeHtml, getTodayISODate } from '../utils/text';
 
 /* ==========================================================================
    TypeScript Interfaces
    ========================================================================== */
 
 export interface RCACaptura {
-  fecha?: string;
+  fecha?: string[];
   maquina?: string;
   tiempoParo?: string;
   problema?: string;
@@ -183,7 +183,11 @@ export function persistCurrentState(): void {
     correctivas: getAccionesFromDOM('correctiva'),
     preventivas: getAccionesFromDOM('preventiva')
   };
-  localStorage.setItem('rcaData', JSON.stringify(rcaData));
+  try {
+    localStorage.setItem('rcaData', JSON.stringify(rcaData));
+  } catch {
+    // localStorage may be full or unavailable — silently skip
+  }
   // updateClearAllButton is called from main after all modules are loaded
 }
 
@@ -198,7 +202,7 @@ export function hasData(): boolean {
   const ish = rcaData.ishikawa || {};
 
   return !!(
-    f.fecha || f.maquina || f.tiempoParo || f.problema || f.sintomas || f.responsable || f.indicador ||
+    f.fecha?.length || f.maquina || f.tiempoParo || f.problema || f.sintomas || f.responsable || f.indicador ||
     w.why1 || w.why2 || w.why3 || w.why4 || w.why5 ||
     ish.maquina || ish.metodo || ish.materiales || ish.manoObra || ish.medicion || ish.medioAmbiente ||
     rcaData.acciones.correctivas.length > 0 || rcaData.acciones.preventivas.length > 0
@@ -214,7 +218,17 @@ export function hasCapturaData(): boolean {
    Data Formatting Helpers
    ========================================================================== */
 
-function formatDate(isoDate: string): string {
+export function formatDate(isoDate: string | string[] | undefined): string {
+  if (!isoDate || (Array.isArray(isoDate) && isoDate.length === 0)) return '';
+  if (Array.isArray(isoDate)) {
+    if (isoDate.length === 1) return formatSingleDate(isoDate[0]);
+    if (isoDate.length === 2) return formatDateRange(isoDate[0], isoDate[1]);
+    return isoDate.map(d => formatShortDate(d)).join(', ');
+  }
+  return formatSingleDate(isoDate);
+}
+
+export function formatSingleDate(isoDate: string): string {
   if (!isoDate) return '';
   const parts = isoDate.split('-');
   if (parts.length === 3) {
@@ -230,9 +244,38 @@ function formatDate(isoDate: string): string {
   return isoDate;
 }
 
+export function formatShortDate(isoDate: string): string {
+  if (!isoDate) return '';
+  const parts = isoDate.split('-');
+  if (parts.length !== 3) return isoDate;
+  return `${parts[2]}/${parts[1]}`;
+}
+
+export function formatDateRange(from: string, to: string): string {
+  if (!from || !to) return formatSingleDate(from || to);
+  const d1 = new Date(from + 'T00:00:00');
+  const d2 = new Date(to + 'T00:00:00');
+  if (isNaN(d1.getTime()) || isNaN(d2.getTime())) return `${from} — ${to}`;
+  const sameMonth = d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear();
+  if (sameMonth) {
+    return `${d1.getDate()} — ${d2.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}`;
+  }
+  return `${d1.toLocaleDateString('es-ES', { day: '2-digit', month: 'long' })} — ${d2.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}`;
+}
+
+export function serializeDates(dates: string[] | undefined): string {
+  return dates?.filter(Boolean).join(', ') || '';
+}
+
+export function parseDates(str: string): string[] {
+  if (!str?.trim()) return [];
+  return str.split(',').map(s => s.trim()).filter(Boolean);
+}
+
 function formatTiempoParo(minutes: string): string {
   if (!minutes) return '';
   const total = parseInt(minutes, 10);
+
   if (isNaN(total) || total < 0) return minutes;
   if (total === 0) return '0 min';
   if (total < 60) return `${total} min`;
@@ -260,7 +303,7 @@ export function buildSectionRows(section: DataSection, source?: RCAData): string
   const ishikawa = data.ishikawa || {};
   const acciones = data.acciones || { correctivas: [], preventivas: [] };
 
-  let headers: { label: string; key: string; format?: (v: string) => string }[] = [];
+  let headers: { label: string; key: string; format?: (v: any) => string }[] = [];
 
   if (section === 'captura') {
     headers = [
@@ -303,7 +346,7 @@ export function buildSectionRows(section: DataSection, source?: RCAData): string
 /** Builds a single horizontal data row for the given section */
 function buildHorizontalDataRow(
   section: DataSection,
-  headers: { key: string; label: string; format?: (v: string) => string }[],
+  headers: { key: string; label: string; format?: (v: any) => string }[],
   source?: RCAData
 ): string {
   const data = source || rcaData;
@@ -313,10 +356,17 @@ function buildHorizontalDataRow(
 
   const cells = headers.map(h => {
     let value = '';
+    let cellDisplayValue: string | undefined;
     const key = `${section}.${h.key}`;
     if (section === 'captura') {
-      value = captura[h.key as keyof RCACaptura] || '';
-      if (h.format) value = h.format(value);
+      const raw = captura[h.key as keyof RCACaptura];
+      if (h.key === 'fecha') {
+        value = serializeDates(raw as string[] | undefined);
+        cellDisplayValue = h.format ? h.format(raw) : value;
+      } else {
+        value = (raw as string) || '';
+        if (h.format) cellDisplayValue = h.format(value);
+      }
     } else if (section === 'ishikawa') {
       value = ishikawa[h.key] || '';
     } else if (section === '5whys') {
@@ -332,7 +382,7 @@ function buildHorizontalDataRow(
         value = (whys[h.key as keyof RCAWhys] as string) || '';
       }
     }
-    return buildHorizontalCell(key, value);
+    return buildHorizontalCell(key, value, cellDisplayValue);
   });
 
   // Add actions column with delete-section button at the end
@@ -343,10 +393,10 @@ function buildHorizontalDataRow(
 }
 
 /** Builds a single cell in the horizontal table (edit button per cell, no delete) */
-function buildHorizontalCell(key: string, value: string): string {
+function buildHorizontalCell(key: string, value: string, displayValue?: string): string {
   const editingKey = _editingKey;
   const isEditing = editingKey === key;
-  const displayVal = value ? escapeHtml(value) : '<span class="val-empty">—</span>';
+  const display = displayValue !== undefined ? escapeHtml(displayValue) : (value ? escapeHtml(value) : '<span class="val-empty">—</span>');
 
   let cellContent: string;
   if (isEditing) {
@@ -357,7 +407,7 @@ function buildHorizontalCell(key: string, value: string): string {
     </div>`;
   } else {
     const editBtn = `<button class="cell-btn cell-btn-inline" onclick="window.__startEdit('${key}')" title="Editar"><i class="fas fa-pen"></i></button>`;
-    cellContent = `<span class="cell-h-val">${displayVal}</span><span class="cell-h-actions">${editBtn}</span>`;
+    cellContent = `<span class="cell-h-val">${display}</span><span class="cell-h-actions">${editBtn}</span>`;
   }
 
   return `<td data-key="${key}" class="cell-h">${cellContent}</td>`;
@@ -463,8 +513,9 @@ export function buildDataRows(): string {
       { key: 'responsable', label: 'Responsable' }
     ];
     tables.push(buildDrawerVerticalSectionTable('Captura', 'fa-clipboard text-blue-600', capturaFields.map(f => {
-      let value = captura[f.key as keyof RCACaptura] || '';
-      if (f.key === 'fecha') value = formatDate(value);
+      const raw = captura[f.key as keyof RCACaptura];
+      let value = Array.isArray(raw) ? raw.join(', ') : (raw || '');
+      if (f.key === 'fecha') value = formatDate(raw);
       if (f.key === 'tiempoParo') value = formatTiempoParo(value);
       return { key: `captura.${f.key}`, label: f.label, value };
     })));

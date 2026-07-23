@@ -103,8 +103,8 @@
         <div class="step-body">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
-              <label class="std-label" for="fechaEvento">Fecha del análisis</label>
-              <input type="date" id="fechaEvento" class="std-input" max="">
+              <label class="std-label">Fecha del análisis</label>
+              <div id="fechaEvento-container" class="dp-wrap"></div>
             </div>
             <div class="select-wrapper">
               <label class="std-label" for="maquina">Máquina / Equipo</label>
@@ -524,10 +524,10 @@
   </div>
 
   <!-- Ishikawa Fullscreen Modal -->
-  <div id="ish-modal-overlay" class="ish-modal-overlay" onclick="if (event.target === this) window.__closeIshikawaModal()">
+  <div id="ish-modal-overlay" class="ish-modal-overlay">
     <div class="ish-modal-content">
-      <button class="ish-modal-close" onclick="window.__closeIshikawaModal()"><i class="fas fa-times"></i></button>
-      <svg viewBox="0 0 1000 460" xmlns="http://www.w3.org/2000/svg" class="ishikawa-svg"></svg>
+      <button class="ish-modal-close" data-modal-close><i class="fas fa-times"></i></button>
+      <div class="ish-modal-body"></div>
     </div>
   </div>
 

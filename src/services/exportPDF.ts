@@ -2,6 +2,7 @@ import { rcaData, CATEGORY_ORDER, ISHIKAWA_CATEGORY_CONFIG, type RCAIshikawa, ty
 import { roundRect, upscaleCanvas } from '../utils/dom';
 import { escapeHtml } from '../utils/text';
 import { showToast } from '../utils/toast';
+import { handleError } from '../utils/errorHandler';
 import { getCurrentCauseSummary } from '../state/store';
 import { recordRootCauseForPareto } from './pareto';
 import { jsPDF } from 'jspdf';
@@ -15,8 +16,7 @@ export function handlePDFExport(
   updateIshikawaForMachine: (machine: string, data: any, problem: string) => void
 ): void {
   exportPDF(updateIshikawaForMachine).catch(error => {
-    console.error('Error al exportar PDF:', error);
-    showToast('Error al generar el PDF.', 'error');
+    handleError(error, 'generar el PDF');
   });
 }
 
@@ -190,12 +190,18 @@ async function exportPDF(
     addSectionTitle('1. Información del Problema');
 
     const captura = rcaData.captura || {};
-    const fechaInput = captura.fecha || '';
+    const rawFechas = captura.fecha || [];
     let fechaStr = 'No especificada';
-    if (fechaInput) {
-      fechaStr = new Date(fechaInput + 'T00:00:00').toLocaleDateString('es-ES', {
+    if (rawFechas.length === 1) {
+      fechaStr = new Date(rawFechas[0] + 'T00:00:00').toLocaleDateString('es-ES', {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
       });
+    } else if (rawFechas.length >= 2) {
+      fechaStr = rawFechas.map(d =>
+        new Date(d + 'T00:00:00').toLocaleDateString('es-ES', {
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        })
+      ).join(' — ');
     }
 
     addField('Fecha del evento:', fechaStr);
@@ -323,8 +329,7 @@ async function exportPDF(
     doc.save('Diagnostico_Fallas.pdf');
 
   } catch (error: any) {
-    console.error('Error en exportación PDF:', error);
-    showToast('Error al generar el PDF.', 'error');
+    handleError(error, 'generar el PDF');
   }
 }
 
