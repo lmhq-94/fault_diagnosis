@@ -78,42 +78,49 @@ export async function saveAnalysisFile(data: RCAData): Promise<void> {
   );
 }
 
-/** Checks if analisis.json exists and returns its metadata */
-export async function checkAnalysisFile(): Promise<{
+interface CheckResult {
   exists: boolean;
   savedAt?: string;
   captura?: any;
   whys?: any;
   ishikawa?: any;
   acciones?: any;
-}> {
-  return apiOrFallback(
-    () => apiFetch('/api/check-analysis'),
-    () => {
-      const record = lsLoad();
-      if (!record) return { exists: false };
-      return {
-        exists: true,
-        savedAt: record.savedAt,
-        captura: record.data?.captura || {},
-        whys: record.data?.whys || {},
-        ishikawa: record.data?.ishikawa || {},
-        acciones: record.data?.acciones || { correctivas: [], preventivas: [] },
-      };
-    }
-  );
+}
+
+/** Checks if analisis.json exists and returns its metadata */
+export async function checkAnalysisFile(): Promise<CheckResult> {
+  const fromLs = (): CheckResult => {
+    const record = lsLoad();
+    if (!record) return { exists: false };
+    return {
+      exists: true,
+      savedAt: record.savedAt,
+      captura: record.data?.captura || {},
+      whys: record.data?.whys || {},
+      ishikawa: record.data?.ishikawa || {},
+      acciones: record.data?.acciones || { correctivas: [], preventivas: [] },
+    };
+  };
+
+  try {
+    const apiResult = await apiFetch<CheckResult>('/api/check-analysis');
+    if (apiResult.exists) return apiResult;
+    return fromLs();
+  } catch {
+    return fromLs();
+  }
 }
 
 /** Loads the full data from analisis.json */
 export async function loadAnalysis(): Promise<{ savedAt: string; data: RCAData }> {
-  return apiOrFallback(
-    () => apiFetch('/api/load-analysis'),
-    () => {
-      const record = lsLoad();
-      if (!record) throw new Error('Analysis not found');
-      return record;
-    }
-  );
+  try {
+    const apiResult = await apiFetch<{ savedAt: string; data: RCAData }>('/api/load-analysis');
+    return apiResult;
+  } catch {
+    const record = lsLoad();
+    if (!record) throw new Error('Analysis not found');
+    return record;
+  }
 }
 
 /** Overwrites analisis.json with new data */

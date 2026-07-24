@@ -25,7 +25,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ishikawa: record.data?.ishikawa || {},
       acciones: record.data?.acciones || { correctivas: [], preventivas: [] },
     });
-  } catch {
+  } catch (err: any) {
+    if (err?.message?.includes('does not exist') || err?.message?.includes('not found')) {
+      return res.status(200).json({ exists: false });
+    }
     res.status(200).json({ exists: false, blobUnavailable: true });
   }
 }

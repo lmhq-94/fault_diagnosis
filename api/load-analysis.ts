@@ -12,12 +12,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const meta = await head(BLOB_FILENAME);
-    if (!meta) return res.status(200).json({ blobUnavailable: true, error: 'Analysis not found' });
+    if (!meta) return res.status(200).json({ error: 'Analysis not found' });
 
     const resp = await fetch(meta.downloadUrl);
     const record = await resp.json();
     res.status(200).json(record);
-  } catch {
+  } catch (err: any) {
+    if (err?.message?.includes('does not exist') || err?.message?.includes('not found')) {
+      return res.status(200).json({ error: 'Analysis not found' });
+    }
     res.status(200).json({ blobUnavailable: true });
   }
 }
