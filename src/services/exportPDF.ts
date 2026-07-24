@@ -22,7 +22,7 @@ export function handlePDFExport(
 
 async function loadLogoBase64(): Promise<string | null> {
   try {
-    const resp = await fetch('/src/assets/logo.png');
+    const resp = await fetch('/logo.png');
     const blob = await resp.blob();
     return new Promise((resolve) => {
       const reader = new FileReader();

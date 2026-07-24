@@ -1,6 +1,20 @@
-import { put, get, del, head } from '@vercel/blob';
-
 const BLOB_FILENAME = 'analysis.json';
+
+function isBlobConfigured(): boolean {
+  return !!process.env.BLOB_READ_WRITE_TOKEN;
+}
+
+let _blobModule: any = null;
+async function getBlob() {
+  if (!_blobModule) {
+    try {
+      _blobModule = await import('@vercel/blob');
+    } catch {
+      _blobModule = { error: true };
+    }
+  }
+  return _blobModule;
+}
 
 export interface AnalysisRecord {
   id: string;
@@ -9,10 +23,13 @@ export interface AnalysisRecord {
 }
 
 export async function readAnalysis(): Promise<AnalysisRecord | null> {
+  if (!isBlobConfigured()) return null;
   try {
-    const blob = await get(BLOB_FILENAME);
-    if (!blob) return null;
-    const text = await blob.text();
+    const blob = await getBlob();
+    if (blob.error) return null;
+    const result = await blob.get(BLOB_FILENAME);
+    if (!result) return null;
+    const text = await result.text();
     return JSON.parse(text);
   } catch {
     return null;
@@ -20,16 +37,23 @@ export async function readAnalysis(): Promise<AnalysisRecord | null> {
 }
 
 export async function writeAnalysis(data: any): Promise<void> {
+  if (!isBlobConfigured()) return;
   const record: AnalysisRecord = {
     id: 'analisis',
     savedAt: new Date().toISOString(),
     data: data.data || data,
   };
-  await put(BLOB_FILENAME, JSON.stringify(record), {
-    contentType: 'application/json',
-    access: 'private',
-    addRandomSuffix: false,
-  });
+  try {
+    const blob = await getBlob();
+    if (blob.error) return;
+    await blob.put(BLOB_FILENAME, JSON.stringify(record), {
+      contentType: 'application/json',
+      access: 'private',
+      addRandomSuffix: false,
+    });
+  } catch {
+    // blob unavailable — caller should handle
+  }
 }
 
 export async function checkAnalysis(): Promise<{
@@ -40,9 +64,12 @@ export async function checkAnalysis(): Promise<{
   ishikawa?: any;
   acciones?: any;
 }> {
+  if (!isBlobConfigured()) return { exists: false };
   try {
-    const blob = await head(BLOB_FILENAME);
-    if (!blob) return { exists: false };
+    const blob = await getBlob();
+    if (blob.error) return { exists: false };
+    const headResult = await blob.head(BLOB_FILENAME);
+    if (!headResult) return { exists: false };
     const record = await readAnalysis();
     if (!record) return { exists: false };
     return {
@@ -59,8 +86,11 @@ export async function checkAnalysis(): Promise<{
 }
 
 export async function deleteAnalysisFile(): Promise<boolean> {
+  if (!isBlobConfigured()) return false;
   try {
-    await del(BLOB_FILENAME);
+    const blob = await getBlob();
+    if (blob.error) return false;
+    await blob.del(BLOB_FILENAME);
     return true;
   } catch {
     return false;

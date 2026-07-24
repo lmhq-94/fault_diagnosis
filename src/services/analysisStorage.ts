@@ -42,7 +42,11 @@ async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
     const err = await res.json().catch(() => ({ error: res.statusText }));
     throw new Error(err.error || 'Error en la comunicación con el servidor');
   }
-  return res.json();
+  const data = await res.json();
+  if (data && typeof data === 'object' && (data as any).blobUnavailable) {
+    throw new Error('Almacenamiento en servidor no disponible');
+  }
+  return data;
 }
 
 async function apiOrFallback<T>(apiCall: () => Promise<T>, fallback: () => T): Promise<T> {
