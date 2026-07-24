@@ -20,6 +20,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       contentType: 'application/json',
       access: 'private',
       addRandomSuffix: false,
+      allowOverwrite: true,
     });
     res.status(200).json({ success: true, id: 'analisis', filename: 'analysis.json' });
   } catch {
