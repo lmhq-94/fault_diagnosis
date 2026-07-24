@@ -2,9 +2,36 @@
    Analysis Storage Service
    Communicates with the Vite API middleware to save/load/check/delete
    a single analysis file (analisis.json) in the project's analyses/ directory.
+   Falls back to localStorage when the API is unavailable (e.g. on Vercel).
    ========================================================================== */
 
 import type { RCAData } from '../state/store';
+
+const LS_KEY = 'savedAnalysis';
+
+/* ---------- localStorage fallback helpers ---------- */
+
+function lsSave(data: RCAData): void {
+  const record = {
+    id: 'analisis',
+    savedAt: new Date().toISOString(),
+    data,
+  };
+  try { localStorage.setItem(LS_KEY, JSON.stringify(record)); } catch { /* ignore */ }
+}
+
+function lsLoad(): { savedAt: string; data: RCAData } | null {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function lsDelete(): void {
+  try { localStorage.removeItem(LS_KEY); } catch { /* ignore */ }
+}
+
+/* ---------- Server API with localStorage fallback ---------- */
 
 async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -18,12 +45,33 @@ async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   return res.json();
 }
 
+async function apiOrFallback<T>(apiCall: () => Promise<T>, fallback: () => T): Promise<T> {
+  try {
+    return await apiCall();
+  } catch {
+    return fallback();
+  }
+}
+
+async function apiOrFallbackVoid(apiCall: () => Promise<void>, fallback: () => void): Promise<void> {
+  try {
+    await apiCall();
+  } catch {
+    fallback();
+  }
+}
+
 /** Saves the current analysis to analisis.json */
 export async function saveAnalysisFile(data: RCAData): Promise<void> {
-  await apiFetch<{ success: boolean }>('/api/save-analysis', {
-    method: 'POST',
-    body: JSON.stringify({ data }),
-  });
+  await apiOrFallbackVoid(
+    async () => {
+      await apiFetch<{ success: boolean }>('/api/save-analysis', {
+        method: 'POST',
+        body: JSON.stringify({ data }),
+      });
+    },
+    () => { lsSave(data); }
+  );
 }
 
 /** Checks if analisis.json exists and returns its metadata */
@@ -35,25 +83,56 @@ export async function checkAnalysisFile(): Promise<{
   ishikawa?: any;
   acciones?: any;
 }> {
-  return apiFetch('/api/check-analysis');
+  return apiOrFallback(
+    () => apiFetch('/api/check-analysis'),
+    () => {
+      const record = lsLoad();
+      if (!record) return { exists: false };
+      return {
+        exists: true,
+        savedAt: record.savedAt,
+        captura: record.data?.captura || {},
+        whys: record.data?.whys || {},
+        ishikawa: record.data?.ishikawa || {},
+        acciones: record.data?.acciones || { correctivas: [], preventivas: [] },
+      };
+    }
+  );
 }
 
 /** Loads the full data from analisis.json */
 export async function loadAnalysis(): Promise<{ savedAt: string; data: RCAData }> {
-  return apiFetch('/api/load-analysis');
+  return apiOrFallback(
+    () => apiFetch('/api/load-analysis'),
+    () => {
+      const record = lsLoad();
+      if (!record) throw new Error('Analysis not found');
+      return record;
+    }
+  );
 }
 
 /** Overwrites analisis.json with new data */
 export async function updateAnalysisFile(data: RCAData): Promise<void> {
-  await apiFetch<{ success: boolean }>('/api/update-analysis', {
-    method: 'PUT',
-    body: JSON.stringify({ data }),
-  });
+  await apiOrFallbackVoid(
+    async () => {
+      await apiFetch<{ success: boolean }>('/api/update-analysis', {
+        method: 'PUT',
+        body: JSON.stringify({ data }),
+      });
+    },
+    () => { lsSave(data); }
+  );
 }
 
 /** Deletes analisis.json */
 export async function deleteAnalysis(): Promise<void> {
-  await apiFetch<{ success: boolean }>('/api/delete-analysis', {
-    method: 'DELETE',
-  });
+  await apiOrFallbackVoid(
+    async () => {
+      await apiFetch<{ success: boolean }>('/api/delete-analysis', {
+        method: 'DELETE',
+      });
+    },
+    () => { lsDelete(); }
+  );
 }

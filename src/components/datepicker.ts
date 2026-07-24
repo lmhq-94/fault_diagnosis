@@ -28,17 +28,19 @@ function getContainerId(container: HTMLElement): string {
 }
 
 function buildHTML(containerId: string, mode: DateMode, value: string[], today: string): string {
-  const modeLabels: Record<DateMode, string> = { single: 'Una fecha', multiple: 'Varias fechas', range: 'Rango' };
+  const modeLabels: Record<DateMode, string> = { single: 'Una fecha', multiple: 'Varias', range: 'Rango' };
 
   return `
     <input type="hidden" id="${containerId}-value" value="${escapeHtml(value.join(','))}">
-    <div class="dp-mode-toggle">
-      ${(['single', 'multiple', 'range'] as DateMode[]).map(m =>
-        `<button type="button" class="dp-mode-btn${m === mode ? ' dp-active' : ''}" data-mode="${m}">${modeLabels[m]}</button>`
-      ).join('')}
-    </div>
-    <div class="dp-body" data-mode="${mode}">
-      ${renderBody(mode, value, today)}
+    <div class="dp-row">
+      <div class="dp-mode-toggle">
+        ${(['single', 'multiple', 'range'] as DateMode[]).map(m =>
+          `<button type="button" class="dp-mode-btn${m === mode ? ' dp-active' : ''}" data-mode="${m}" title="${modeLabels[m]}">${modeLabels[m]}</button>`
+        ).join('')}
+      </div>
+      <div class="dp-body" data-mode="${mode}">
+        ${renderBody(mode, value, today)}
+      </div>
     </div>`;
 }
 
@@ -48,30 +50,16 @@ function renderBody(mode: DateMode, value: string[], today: string): string {
       return `<input type="date" class="std-input dp-date-input" value="${escapeHtml(value[0] || today)}" max="${today}">`;
     case 'range':
       return `
-        <div class="dp-range">
-          <div class="dp-range-field">
-            <label class="dp-label">Desde</label>
-            <input type="date" class="std-input dp-date-input" value="${escapeHtml(value[0] || '')}" max="${today}">
-          </div>
-          <span class="dp-range-sep">—</span>
-          <div class="dp-range-field">
-            <label class="dp-label">Hasta</label>
-            <input type="date" class="std-input dp-date-input" value="${escapeHtml(value[1] || '')}" max="${today}">
-          </div>
-        </div>`;
+        <input type="date" class="std-input dp-date-input dp-range-from" value="${escapeHtml(value[0] || '')}" max="${today}" placeholder="Desde">
+        <span class="dp-range-sep">—</span>
+        <input type="date" class="std-input dp-date-input dp-range-to" value="${escapeHtml(value[1] || '')}" max="${today}" placeholder="Hasta">`;
     case 'multiple':
       return `
-        <div class="dp-multi">
-          <div class="dp-multi-add">
-            <input type="date" class="std-input dp-date-input dp-multi-input" max="${today}">
-            <button type="button" class="btn btn-primary btn-sm dp-add-btn">Agregar</button>
-          </div>
-          <div class="dp-chips">
-            ${value.map((d, i) =>
-              `<span class="dp-chip">${escapeHtml(formatShortDate(d))}<button type="button" class="dp-chip-remove" data-index="${i}">&times;</button></span>`
-            ).join('')}
-          </div>
-        </div>`;
+        <input type="date" class="std-input dp-date-input dp-multi-input" max="${today}" placeholder="Agregar fecha">
+        <button type="button" class="btn btn-primary btn-sm dp-add-btn"><i class="fas fa-plus"></i></button>
+        <div class="dp-chips">${value.map((d, i) =>
+          `<span class="dp-chip">${escapeHtml(formatShortDate(d))}<button type="button" class="dp-chip-remove" data-index="${i}">&times;</button></span>`
+        ).join('')}</div>`;
   }
 }
 

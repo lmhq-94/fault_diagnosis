@@ -1,0 +1,51 @@
+{
+  "id": "analisis",
+  "savedAt": "2026-07-24T01:57:24.828Z",
+  "data": {
+    "captura": {
+      "fecha": [
+        "2026-07-23"
+      ],
+      "maquina": "Generadora 2",
+      "tiempoParo": "60",
+      "problema": "Se jodió",
+      "sintomas": "Ruidos",
+      "responsable": "Pablo",
+      "indicador": ""
+    },
+    "whys": {
+      "why1": "Primero",
+      "why2": "Segundo",
+      "why3": "Tercero",
+      "why4": "",
+      "why5": "",
+      "wizardLevel": 3
+    },
+    "ishikawa": {
+      "maquina": "Fallas",
+      "metodo": "Proc...",
+      "materiales": "Repuestos",
+      "manoObra": "Capacitacion",
+      "medicion": "Sensores",
+      "medioAmbiente": "Temperatura"
+    },
+    "acciones": {
+      "correctivas": [
+        {
+          "descripcion": "Correccion",
+          "responsable": "Tino",
+          "fecha": "2026-07-23",
+          "prioridad": "media"
+        }
+      ],
+      "preventivas": [
+        {
+          "descripcion": "Prevencion",
+          "responsable": "Jarvis",
+          "fecha": "2026-07-23",
+          "prioridad": "media"
+        }
+      ]
+    }
+  }
+}

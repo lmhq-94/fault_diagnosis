@@ -11,6 +11,7 @@
     "test:watch": "vitest"
   },
   "devDependencies": {
+    "@vercel/node": "^5.8.26",
     "typescript": "~5.7.2",
     "vite": "^6.0.0",
     "vitest": "^4.1.10"
@@ -18,6 +19,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.0",
     "@tailwindcss/vite": "^4.0.0",
+    "@vercel/blob": "^2.6.1",
     "exceljs": "^4.4.0",
     "jspdf": "^2.5.1",
     "notyf": "^3.10.0",
