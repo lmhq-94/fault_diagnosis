@@ -286,6 +286,16 @@ async function clearAll(skipConfirm = false): Promise<void> {
     el.classList.add('hidden');
   });
 
+  setRcaData({
+    captura: {},
+    whys: { why1: '', why2: '', why3: '', why4: '', why5: '', wizardLevel: 1 },
+    ishikawa: {},
+    acciones: { correctivas: [], preventivas: [] }
+  });
+  persistCurrentState();
+
+  localStorage.setItem('wizardCleared', 'true');
+
   showTab('captura');
   updateClearAllButton();
 }
@@ -311,6 +321,7 @@ async function clearAllFromTable(): Promise<void> {
   setSavedRcaData(empty);
 
   localStorage.removeItem('rcaData');
+  localStorage.removeItem('wizardCleared');
 
   try {
     await deleteAnalysis();
@@ -612,46 +623,50 @@ async function loadAnalysisFromJson(): Promise<void> {
     setRcaData(restored);
     setSavedRcaData(JSON.parse(JSON.stringify(restored)));
 
-    // Restore DOM fields
-    const cap = rcaData.captura;
-    if (cap.fecha?.length) {
-      setDatepickerValue('fechaEvento-container', cap.fecha);
-    }
-    const maqEl = document.getElementById('maquina') as HTMLSelectElement | null;
-    if (maqEl && cap.maquina) maqEl.value = cap.maquina;
-    const tpEl = document.getElementById('tiempoParo') as HTMLInputElement | null;
-    if (tpEl && cap.tiempoParo) tpEl.value = cap.tiempoParo;
-    const probEl = document.getElementById('descripcionProblema') as HTMLTextAreaElement | null;
-    if (probEl && cap.problema) probEl.value = cap.problema;
-    const sintEl = document.getElementById('sintomas') as HTMLTextAreaElement | null;
-    if (sintEl && cap.sintomas) sintEl.value = cap.sintomas;
-    const respEl = document.getElementById('responsable') as HTMLInputElement | null;
-    if (respEl && cap.responsable) respEl.value = cap.responsable;
+    const wizardCleared = localStorage.getItem('wizardCleared') === 'true';
+    localStorage.removeItem('wizardCleared');
 
-    CATEGORY_ORDER.forEach(cat => {
-      if (rcaData.ishikawa[cat]) {
-        const el = document.getElementById(`ishikawa-${cat}`) as HTMLTextAreaElement | null;
-        if (el) el.value = rcaData.ishikawa[cat]!;
+    if (!wizardCleared) {
+      const cap = rcaData.captura;
+      if (cap.fecha?.length) {
+        setDatepickerValue('fechaEvento-container', cap.fecha);
       }
-    });
-    refreshIshikawaDiagram();
-    updateIshikawaGenerateBtn();
+      const maqEl = document.getElementById('maquina') as HTMLSelectElement | null;
+      if (maqEl && cap.maquina) maqEl.value = cap.maquina;
+      const tpEl = document.getElementById('tiempoParo') as HTMLInputElement | null;
+      if (tpEl && cap.tiempoParo) tpEl.value = cap.tiempoParo;
+      const probEl = document.getElementById('descripcionProblema') as HTMLTextAreaElement | null;
+      if (probEl && cap.problema) probEl.value = cap.problema;
+      const sintEl = document.getElementById('sintomas') as HTMLTextAreaElement | null;
+      if (sintEl && cap.sintomas) sintEl.value = cap.sintomas;
+      const respEl = document.getElementById('responsable') as HTMLInputElement | null;
+      if (respEl && cap.responsable) respEl.value = cap.responsable;
 
-    if (rcaData.acciones.correctivas.length > 0) {
-      rcaData.acciones.correctivas.forEach((accion, index) => {
-        addAccionToDOM('correctiva', accion, index);
+      CATEGORY_ORDER.forEach(cat => {
+        if (rcaData.ishikawa[cat]) {
+          const el = document.getElementById(`ishikawa-${cat}`) as HTMLTextAreaElement | null;
+          if (el) el.value = rcaData.ishikawa[cat]!;
+        }
       });
-    }
-    if (rcaData.acciones.preventivas.length > 0) {
-      rcaData.acciones.preventivas.forEach((accion, index) => {
-        addAccionToDOM('preventiva', accion, index);
-      });
-    }
+      refreshIshikawaDiagram();
+      updateIshikawaGenerateBtn();
 
-    updateTabLockState();
-    updateClearAllButton();
-    syncPlanFromAnalysis();
-    renderWhysWizard();
+      if (rcaData.acciones.correctivas.length > 0) {
+        rcaData.acciones.correctivas.forEach((accion, index) => {
+          addAccionToDOM('correctiva', accion, index);
+        });
+      }
+      if (rcaData.acciones.preventivas.length > 0) {
+        rcaData.acciones.preventivas.forEach((accion, index) => {
+          addAccionToDOM('preventiva', accion, index);
+        });
+      }
+
+      updateTabLockState();
+      updateClearAllButton();
+      syncPlanFromAnalysis();
+      renderWhysWizard();
+    }
   } catch {
     logWarn('loadAnalysis', 'No se pudo cargar el archivo guardado — iniciando fresco.');
   }
